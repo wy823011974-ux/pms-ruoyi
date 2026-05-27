@@ -17,3 +17,7 @@ export const listFields = (typeId, cfgId) => get(`/project-types/${typeId}/file-
 export const createField = (typeId, cfgId, data) => post(`/project-types/${typeId}/file-types/${cfgId}/fields`, data)
 export const updateField = (typeId, cfgId, fId, data) => put(`/project-types/${typeId}/file-types/${cfgId}/fields/${fId}`, data)
 export const deleteField = (typeId, cfgId, fId) => del(`/project-types/${typeId}/file-types/${cfgId}/fields/${fId}`)
+
+/** Schema 导入导出 */
+export const exportSchema = (typeId) => get(`/project-types/${typeId}/schema/export`)
+export const importSchema = (typeId, data) => post(`/project-types/${typeId}/schema/import`, data)

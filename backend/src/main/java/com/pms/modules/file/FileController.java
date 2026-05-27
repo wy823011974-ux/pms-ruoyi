@@ -9,6 +9,9 @@ import com.pms.modules.project.PmsProject;
 import com.pms.modules.project.PmsProjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -115,11 +118,34 @@ public class FileController {
     public Result<Void> deleteFile(@PathVariable Long id) {
         PmsFileRecord f = fileMapper.selectById(id);
         if (f == null) return Result.fail("文件不存在");
-        // Delete all versions
-        fileMapper.delete(new LambdaQueryWrapper<PmsFileRecord>()
+        // 删除所有版本 + 物理文件
+        List<PmsFileRecord> all = fileMapper.selectList(new LambdaQueryWrapper<PmsFileRecord>()
                 .eq(PmsFileRecord::getProjectId, f.getProjectId())
                 .eq(PmsFileRecord::getFileTypeConfigId, f.getFileTypeConfigId()));
+        for (PmsFileRecord rec : all) {
+            if (rec.getStoragePath() != null) new File(rec.getStoragePath()).delete();
+            fileMapper.deleteById(rec.getId());
+        }
         return Result.ok();
+    }
+
+    /**
+     * 下载文件 — 根据文件记录ID返回文件流
+     */
+    @GetMapping("/files/{id}/download")
+    public ResponseEntity<org.springframework.core.io.Resource> download(@PathVariable Long id) {
+        PmsFileRecord f = fileMapper.selectById(id);
+        if (f == null || f.getStoragePath() == null) return ResponseEntity.notFound().build();
+
+        java.io.File file = new java.io.File(f.getStoragePath());
+        if (!file.exists()) return ResponseEntity.notFound().build();
+
+        org.springframework.core.io.FileSystemResource resource = new org.springframework.core.io.FileSystemResource(file);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + java.net.URLEncoder.encode(f.getOriginalName(), java.nio.charset.StandardCharsets.UTF_8) + "\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 
     private Map<String,Object> fVO(PmsFileRecord f) {

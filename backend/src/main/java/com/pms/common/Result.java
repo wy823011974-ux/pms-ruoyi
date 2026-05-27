@@ -1,6 +1,7 @@
 package com.pms.common;
 
 import lombok.Data;
+import java.util.Map;
 
 @Data
 public class Result<T> {
@@ -13,12 +14,13 @@ public class Result<T> {
     public static <T> Result<T> fail(String msg) { Result<T> r = new Result<>(); r.code = 500; r.msg = msg; return r; }
     public static <T> Result<T> fail(int code, String msg) { Result<T> r = new Result<>(); r.code = code; r.msg = msg; return r; }
 
-    public static <T> Result<T> page(long total, java.util.List<T> rows) {
-        Result<java.util.Map<String, Object>> r = new Result<>();
+    @SuppressWarnings("unchecked")
+    public static <T> Result<Map<String, Object>> page(long total, java.util.List<T> rows) {
+        Result<Map<String, Object>> r = new Result<>();
         r.code = 200; r.msg = "success";
-        java.util.Map<String, Object> m = new java.util.HashMap<>();
+        Map<String, Object> m = new java.util.HashMap<>();
         m.put("total", total); m.put("rows", rows);
-        r.data = (T) m;
-        return (Result<T>) r;
+        r.data = m;
+        return r;
     }
 }

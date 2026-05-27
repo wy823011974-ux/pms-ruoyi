@@ -93,6 +93,12 @@
             <artifactId>caffeine</artifactId>
         </dependency>
 
+        <!-- AOP（审计日志切面） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>

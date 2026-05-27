@@ -19,6 +19,7 @@ public class ProjectController {
 
     private final PmsProjectMapper projectMapper;
     private final SysUserMapper userMapper;
+    private final ProjectService projectService;
 
     @GetMapping
     public Result<Map<String, Object>> list(
@@ -37,11 +38,16 @@ public class ProjectController {
     @PostMapping
     public Result<Map<String, Object>> create(@RequestBody Map<String, Object> body) {
         PmsProject p = new PmsProject();
-        p.setName((String) body.get("name")); p.setCode((String) body.get("code"));
-        p.setYear((Integer) body.get("year")); p.setLocation((String) body.get("location"));
+        p.setName((String) body.get("name"));
+        p.setYear((Integer) body.get("year"));
+        p.setLocation((String) body.get("location"));
         p.setProjectTypeId(toLong(body.get("projectTypeId")));
-        p.setLeaderId(toLong(body.get("leaderId"))); p.setCreatorId(1L); // TODO: from auth
+        p.setLeaderId(toLong(body.get("leaderId")));
+        // 自动生成项目编码：HBXM-{类型简写}-{年份}-{序号}
+        p.setCode(projectService.generateProjectCode(p.getProjectTypeId(), p.getYear()));
         p.setStatus("IN_PROGRESS");
+        // TODO: 从认证上下文获取当前用户ID
+        p.setCreatorId(1L);
         projectMapper.insert(p);
         return Result.ok(toVO(p));
     }
@@ -70,7 +76,11 @@ public class ProjectController {
     public Result<Map<String,Object>> updateStatus(@PathVariable Long id, @RequestBody Map<String,String> body) {
         PmsProject p = projectMapper.selectById(id);
         if (p == null) return Result.fail("项目不存在");
-        p.setStatus(body.get("status"));
+        String newStatus = body.get("status");
+        // 验证状态流转合法性
+        if (!projectService.isValidStatusTransition(p.getStatus(), newStatus))
+            return Result.fail("不允许从 " + p.getStatus() + " 流转到 " + newStatus);
+        p.setStatus(newStatus);
         projectMapper.updateById(p);
         return Result.ok(toVO(p));
     }

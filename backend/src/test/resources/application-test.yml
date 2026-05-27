@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:pms_test;MODE=MySQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 3000
+
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: isDeleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+jwt:
+  secret: test-secret-key-for-junit-testing-only-64-characters-long
+  expiration: 60
+
+pms:
+  upload-path: ./target/test-uploads
+  max-file-size: 52428800

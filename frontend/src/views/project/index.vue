@@ -39,15 +39,21 @@
     </el-row>
     <el-empty v-if="!projects.length" description="暂无项目" />
 
-    <el-dialog :title="editing?'编辑':'新建'" v-model="dialogVisible" width="500px">
+    <el-dialog :title="editing ? '编辑项目' : '新建项目'" v-model="dialogVisible" width="500px">
       <el-form :model="form" label-width="80px">
-        <el-form-item label="名称"><el-input v-model="form.name" /></el-form-item>
-        <el-form-item label="编号"><el-input v-model="form.code" /></el-form-item>
-        <el-form-item label="年份"><el-input-number v-model="form.year" /></el-form-item>
-        <el-form-item label="地区"><el-input v-model="form.location" /></el-form-item>
-        <el-form-item label="类型"><el-select v-model="form.projectTypeId"><el-option v-for="t in types" :key="t.id" :label="t.name" :value="t.id" /></el-select></el-form-item>
+        <el-form-item label="名称"><el-input v-model="form.name" placeholder="项目名称" /></el-form-item>
+        <el-form-item label="年份"><el-input-number v-model="form.year" :min="2020" :max="2030" /></el-form-item>
+        <el-form-item label="地区"><el-input v-model="form.location" placeholder="如：海南省海口市" /></el-form-item>
+        <el-form-item label="类型">
+          <el-select v-model="form.projectTypeId" placeholder="选择项目类型">
+            <el-option v-for="t in types" :key="t.id" :label="t.name" :value="t.id" />
+          </el-select>
+        </el-form-item>
+        <el-alert v-if="!editing" type="info" :closable="false" show-icon class="mt-2">
+          <template #title><span class="text-xs">项目编码将自动生成（格式：HBXM-类型-年份-序号）</span></template>
+        </el-alert>
       </el-form>
-      <template #footer><el-button @click="dialogVisible=false">取消</el-button><el-button type="primary" @click="submit">保存</el-button></template>
+      <template #footer><el-button @click="dialogVisible = false">取消</el-button><el-button type="primary" @click="submit">保存</el-button></template>
     </el-dialog>
   </div>
 </template>
@@ -59,15 +65,15 @@ import { ElMessage } from 'element-plus'
 
 const projects = ref([]); const types = ref([]); const dialogVisible = ref(false); const editing = ref(null)
 const filter = reactive({ status:'', keyword:'' })
-const form = reactive({ name:'', code:'', year:2026, location:'海南省', projectTypeId:null })
+const form = reactive({ name:'', year:2026, location:'海南省', projectTypeId:null })
 
 async function load() { const r = await listProjects({status:filter.status||undefined, keyword:filter.keyword||undefined}); projects.value = r.data?.rows||[] }
 async function loadTypes() { try{const r=await listProjectTypes(); types.value=r.data||[]}catch{} }
-function openCreate() { editing.value=null; Object.assign(form,{name:'',code:'',year:2026,location:'海南省',projectTypeId:null}); dialogVisible.value=true }
-function openEdit(p) { editing.value=p.id; Object.assign(form,{name:p.name,code:p.code,year:p.year,location:p.location,projectTypeId:p.projectTypeId}); dialogVisible.value=true }
+function openCreate() { editing.value=null; Object.assign(form,{name:'',year:2026,location:'海南省',projectTypeId:null}); dialogVisible.value=true }
+function openEdit(p) { editing.value=p.id; Object.assign(form,{name:p.name,year:p.year,location:p.location,projectTypeId:p.projectTypeId}); dialogVisible.value=true }
 async function submit() {
   if(editing.value){await updateProject(editing.value,form)}else{await createProject(form)}
-  ElMessage.success('保存成功'); dialogVisible.value=false; load()
+  ElMessage.success(editing.value ? '已更新' : '已创建，项目编码已自动生成'); dialogVisible.value=false; load()
 }
 async function changeStatus(p, status) { await updateStatus(p.id, {status}); ElMessage.success('已更新'); load() }
 async function doDelete(p) { await deleteProject(p.id); ElMessage.success('已删除'); load() }

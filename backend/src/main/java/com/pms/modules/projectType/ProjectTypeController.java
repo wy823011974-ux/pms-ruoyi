@@ -1,6 +1,9 @@
 package com.pms.modules.projectType;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.pms.common.Result;
 import com.pms.modules.fileType.PmsFileTypeConfig;
@@ -8,6 +11,7 @@ import com.pms.modules.fileType.PmsFileTypeConfigMapper;
 import com.pms.modules.fileType.PmsFieldDefinition;
 import com.pms.modules.fileType.PmsFieldDefinitionMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -106,6 +110,141 @@ public class ProjectTypeController {
 
     @DeleteMapping("/{typeId}/file-types/{cfgId}/fields/{fieldId}")
     public Result<Void> deleteField(@PathVariable Long fieldId) { fdMapper.deleteById(fieldId); return Result.ok(); }
+
+    // ========== Schema 导入导出 ==========
+
+    /**
+     * 导出完整Schema — 项目类型 + 所有文件类型 + 所有字段定义
+     */
+    @GetMapping("/{typeId}/schema/export")
+    public Result<Map<String, Object>> exportSchema(@PathVariable Long typeId) {
+        PmsProjectType pt = ptMapper.selectById(typeId);
+        if (pt == null) return Result.fail("项目类型不存在");
+
+        List<PmsFileTypeConfig> ftcs = ftcMapper.selectList(
+                new LambdaQueryWrapper<PmsFileTypeConfig>().eq(PmsFileTypeConfig::getProjectTypeId, typeId));
+
+        List<Map<String, Object>> schemas = new ArrayList<>();
+        for (PmsFileTypeConfig ftc : ftcs) {
+            List<PmsFieldDefinition> fields = fdMapper.selectList(
+                    new LambdaQueryWrapper<PmsFieldDefinition>()
+                            .eq(PmsFieldDefinition::getFileTypeConfigId, ftc.getId())
+                            .eq(PmsFieldDefinition::getIsActive, 1)
+                            .orderByAsc(PmsFieldDefinition::getSortOrder));
+
+            Map<String, Object> schema = new LinkedHashMap<>();
+            schema.put("project_type", Map.of("name", pt.getName(), "code", pt.getCode(), "description", pt.getDescription() != null ? pt.getDescription() : ""));
+
+            Map<String, Object> ftcMap = new LinkedHashMap<>();
+            ftcMap.put("name", ftc.getName()); ftcMap.put("code", ftc.getCode());
+            ftcMap.put("skip_rows", ftc.getSkipRows()); ftcMap.put("sheet_name", ftc.getSheetName());
+            ftcMap.put("has_fields", ftc.getHasFields()); ftcMap.put("sort_order", ftc.getSortOrder());
+            schema.put("file_type_config", ftcMap);
+
+            List<Map<String, Object>> columns = new ArrayList<>();
+            for (PmsFieldDefinition fd : fields) {
+                Map<String, Object> col = new LinkedHashMap<>();
+                col.put("key", fd.getFieldKey()); col.put("name", fd.getFieldLabel());
+                col.put("type", fd.getFieldType()); col.put("required", fd.getIsRequired() == 1);
+                if (fd.getOptions() != null) col.put("options", fd.getOptions());
+                if (fd.getExtraAttrs() != null) {
+                    try {
+                        Map<String, Object> attrs = JSONUtil.parseObj(fd.getExtraAttrs());
+                        col.putAll(attrs);
+                    } catch (Exception ignored) {}
+                }
+                columns.add(col);
+            }
+            schema.put("columns", columns);
+            schemas.add(schema);
+        }
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("project_type_name", pt.getName());
+        result.put("file_type_count", ftcs.size());
+        result.put("schemas", schemas);
+        return Result.ok(result);
+    }
+
+    /**
+     * 导入Schema JSON — 自动创建文件类型配置和字段定义
+     */
+    @PostMapping("/{typeId}/schema/import")
+    @PreAuthorize("hasAnyAuthority('ROLE_super_admin', 'ROLE_admin')")
+    public Result<Map<String, Object>> importSchema(@PathVariable Long typeId, @RequestBody Map<String, Object> body) {
+        PmsProjectType pt = ptMapper.selectById(typeId);
+        if (pt == null) return Result.fail("项目类型不存在");
+
+        int fileTypesCreated = 0, fieldsCreated = 0;
+        Object schemasObj = body.get("schemas");
+        if (!(schemasObj instanceof List)) return Result.fail("schemas 必须是数组");
+
+        List<?> schemas = (List<?>) schemasObj;
+        for (Object obj : schemas) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> schema = (Map<String, Object>) obj;
+
+            // 解析文件类型配置
+            @SuppressWarnings("unchecked")
+            Map<String, Object> ftcMap = (Map<String, Object>) schema.get("file_type_config");
+            if (ftcMap == null) continue;
+
+            PmsFileTypeConfig ftc = new PmsFileTypeConfig();
+            ftc.setProjectTypeId(typeId);
+            ftc.setName((String) ftcMap.get("name"));
+            ftc.setCode((String) ftcMap.getOrDefault("code",
+                    cn.hutool.extra.pinyin.PinyinUtil.getPinyin((String) ftcMap.get("name"), "").toLowerCase().replace(" ", "_")));
+            ftc.setSkipRows((Integer) ftcMap.getOrDefault("skip_rows", 0));
+            ftc.setSheetName((String) ftcMap.get("sheet_name"));
+            ftc.setHasFields((Integer) ftcMap.getOrDefault("has_fields", 0));
+            ftc.setSortOrder((Integer) ftcMap.getOrDefault("sort_order", 0));
+            ftcMapper.insert(ftc);
+            fileTypesCreated++;
+
+            // 解析字段定义
+            Object columnsObj = schema.get("columns");
+            if (columnsObj instanceof List) {
+                List<?> columns = (List<?>) columnsObj;
+                for (int i = 0; i < columns.size(); i++) {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> col = (Map<String, Object>) columns.get(i);
+
+                    PmsFieldDefinition fd = new PmsFieldDefinition();
+                    fd.setFileTypeConfigId(ftc.getId());
+                    fd.setFieldKey((String) col.get("key"));
+                    fd.setFieldLabel((String) col.get("name"));
+                    fd.setFieldType((String) col.getOrDefault("type", "text"));
+                    fd.setIsRequired(Boolean.TRUE.equals(col.get("required")) ? 1 : 0);
+                    fd.setSortOrder(i + 1);
+                    fd.setIsActive(1);
+
+                    // 处理options
+                    if (col.get("options") != null) {
+                        fd.setOptions(JSONUtil.toJsonStr(col.get("options")));
+                    }
+
+                    // 处理extra_attrs（敏感信息、校验规则等）
+                    Map<String, Object> extraAttrs = new HashMap<>();
+                    if (col.get("sensitive") != null) extraAttrs.put("sensitive", col.get("sensitive"));
+                    if (col.get("anonymize_rule") != null) extraAttrs.put("anonymize_rule", col.get("anonymize_rule"));
+                    if (col.get("max_length") != null) extraAttrs.put("max_length", col.get("max_length"));
+                    if (col.get("pattern") != null) extraAttrs.put("pattern", col.get("pattern"));
+                    if (col.get("min") != null) extraAttrs.put("min", col.get("min"));
+                    if (col.get("max") != null) extraAttrs.put("max", col.get("max"));
+                    if (!extraAttrs.isEmpty()) fd.setExtraAttrs(JSONUtil.toJsonStr(extraAttrs));
+
+                    fdMapper.insert(fd);
+                    fieldsCreated++;
+                }
+            }
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("message", "导入成功");
+        result.put("fileTypesCreated", fileTypesCreated);
+        result.put("fieldsCreated", fieldsCreated);
+        return Result.ok(result);
+    }
 
     // ========== VO helpers ==========
     private Map<String,Object> ptVO(PmsProjectType pt) {

@@ -33,28 +33,28 @@ public class Anonymizer {
         return result;
     }
 
-    static String maskName(String v) {
+    public static String maskName(String v) {
         v = v.trim(); if (v.isEmpty()) return v;
         for (String cs : COMPOUND_SURNAMES) { if (v.startsWith(cs)) return cs + "*".repeat(Math.max(0, v.length() - cs.length())); }
         if (v.contains("·")) { int idx = v.indexOf("·"); return v.substring(0, idx + 1) + "*".repeat(Math.max(0, v.length() - idx - 1)); }
         return v.charAt(0) + "*".repeat(Math.max(0, v.length() - 1));
     }
 
-    static String maskIdCard(String v) {
+    public static String maskIdCard(String v) {
         v = v.trim();
         if (v.length() >= 15) return v.substring(0, 6) + "*".repeat(Math.max(0, v.length() - 10)) + v.substring(v.length() - 4);
         if (v.length() >= 6) return v.substring(0, 3) + "*".repeat(Math.max(0, v.length() - 3));
         return "*".repeat(v.length());
     }
 
-    static String maskPhone(String v) {
+    public static String maskPhone(String v) {
         v = v.trim();
         if (v.length() == 11 && v.matches("\\d+")) return v.substring(0, 3) + "****" + v.substring(7);
         if (v.length() >= 6) return v.substring(0, 3) + "*".repeat(Math.max(0, v.length() - 6)) + v.substring(v.length() - 3);
         return "*".repeat(v.length());
     }
 
-    static String maskAddress(String v) {
+    public static String maskAddress(String v) {
         v = v.trim(); if (v.isEmpty()) return v;
         Pattern p = Pattern.compile("^([^省]+省)?([^市]+市)?([^区县市]+[区县市])?");
         Matcher m = p.matcher(v);

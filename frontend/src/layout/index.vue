@@ -38,7 +38,8 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { ElMessageBox } from 'element-plus'
+import { changePassword } from '@/api/auth'
+import { ElMessageBox, ElMessage } from 'element-plus'
 
 const route = useRoute()
 const router = useRouter()
@@ -52,9 +53,21 @@ const roleType = computed(() => roleTypes[store.userInfo?.role] || 'info')
 function handleCommand(cmd) {
   if (cmd === 'logout') { store.logout(); router.push('/login') }
   else if (cmd === 'password') {
-    ElMessageBox.prompt('请输入新密码', '修改密码', { inputType: 'password' }).then(({ value }) => {
-      // TODO: call API
-    })
+    ElMessageBox.prompt('请输入新密码', '修改密码', {
+      inputType: 'password',
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+    }).then(async ({ value }) => {
+      if (!value || value.length < 8) { ElMessage.warning('密码至少8位'); return }
+      // 简单实现：直接设置新密码（实际应弹窗输旧密码+新密码）
+      ElMessageBox.prompt('请输入旧密码', '验证身份', { inputType: 'password' }).then(async ({ value: oldPwd }) => {
+        try {
+          await changePassword({ oldPassword: oldPwd, newPassword: value })
+          ElMessage.success('密码修改成功，请重新登录')
+          store.logout(); router.push('/login')
+        } catch (e) { ElMessage.error('修改失败: ' + (e.response?.data?.msg || e.message)) }
+      }).catch(() => {})
+    }).catch(() => {})
   }
 }
 </script>

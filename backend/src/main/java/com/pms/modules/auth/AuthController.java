@@ -3,6 +3,7 @@ package com.pms.modules.auth;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.pms.common.Result;
+import com.pms.framework.audit.Auditable;
 import com.pms.framework.security.JwtUtils;
 import com.pms.modules.user.SysUser;
 import com.pms.modules.user.SysUserMapper;
@@ -55,6 +56,7 @@ public class AuthController {
         return Result.ok();
     }
 
+    @Auditable(action = "LOGIN", targetType = "AUTH")
     @PostMapping("/login")
     public Result<Map<String, Object>> login(@RequestBody Map<String, String> body) {
         String account = body.get("account");
@@ -111,5 +113,32 @@ public class AuthController {
         info.put("status", user.getStatus());
         info.put("department", user.getDepartment());
         return Result.ok(info);
+    }
+
+    /**
+     * 修改当前用户密码 — 需要提供旧密码验证
+     */
+    @PutMapping("/change-password")
+    public Result<Void> changePassword(@RequestBody Map<String, String> body) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) return Result.fail(401, "未登录");
+
+        Long userId = (Long) auth.getPrincipal();
+        SysUser user = userMapper.selectById(userId);
+        if (user == null) return Result.fail("用户不存在");
+
+        String oldPassword = body.get("oldPassword");
+        String newPassword = body.get("newPassword");
+
+        if (StrUtil.isBlank(oldPassword) || StrUtil.isBlank(newPassword))
+            return Result.fail("旧密码和新密码不能为空");
+        if (!passwordEncoder.matches(oldPassword, user.getPassword()))
+            return Result.fail("旧密码不正确");
+        if (newPassword.length() < 8)
+            return Result.fail("新密码至少8位");
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userMapper.updateById(user);
+        return Result.ok();
     }
 }

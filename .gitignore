@@ -1,8 +1,67 @@
+# ============================================
+# 项目管理系统 v2.0 — Git 忽略规则
+# ============================================
+
+# === Java / Maven ===
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+!.mvn/wrapper/maven-wrapper.jar
+
+# === Node / Frontend ===
 node_modules/
 dist/
-target/
-*.log
-.env
+frontend/dist/
+*.local
+
+# === IDE ===
 .idea/
 .vscode/
 *.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+
+# === OS ===
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# === 环境变量 & 敏感配置 ===
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# === 上传文件 ===
+uploads/
+backend/uploads/
+
+# === 测试产物 ===
+tests/visual/screenshots/
+tests/visual/diffs/
+tests/visual/reports/
+
+# === Docker ===
+docker-compose.override.yml
+
+# === Superpowers ===
+.superpowers/brainstorm/*/state/
+
+# === Python (vision.js 辅助) ===
+__pycache__/
+*.pyc
+.venv/
+
+# === 临时文件 ===
+*.tmp
+*.bak
+*.orig
