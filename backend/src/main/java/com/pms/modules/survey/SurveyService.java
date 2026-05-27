@@ -19,6 +19,8 @@ import com.pms.services.Anonymizer;
 import com.pms.services.ExcelValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -83,6 +85,8 @@ public class SurveyService {
         }
 
         PmsProjectType pt = ptMapper.selectById(proj.getProjectTypeId());
+        // 获取当前登录用户ID
+        Long currentUserId = getCurrentUserId();
         int inserted = 0;
 
         for (Map<String, String> row : rows) {
@@ -102,6 +106,7 @@ public class SurveyService {
             sd.setProjectTypeName(pt != null ? pt.getName() : null);
             sd.setFileTypeName(ftc.getName());
             sd.setOriginalFilename(file.getOriginalFilename());
+            sd.setUploadBy(currentUserId);
             surveyDataMapper.insert(sd);
             inserted++;
         }
@@ -110,6 +115,7 @@ public class SurveyService {
         PmsUploadHistory h = new PmsUploadHistory();
         h.setProjectId(projectId);
         h.setFileTypeConfigId(ftcId);
+        h.setUploadBy(currentUserId);
         h.setOriginalFilename(file.getOriginalFilename());
         h.setTotalRows(inserted);
         h.setSuccessRows(inserted);
@@ -192,6 +198,17 @@ public class SurveyService {
     }
 
     // === 私有辅助方法 ===
+
+    /**
+     * 从 Spring Security 上下文获取当前登录用户ID
+     */
+    private Long getCurrentUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getPrincipal() instanceof Long) {
+            return (Long) auth.getPrincipal();
+        }
+        return 1L; // fallback: 默认admin
+    }
 
     private byte[] readFileBytes(MultipartFile file) {
         try { return file.getBytes(); }
