@@ -32,10 +32,10 @@
 
       <div class="login-footer">
         <template v-if="!showRegister">
-          <span class="text-secondary">还没有账号？</span><el-link type="primary" :underline="false" @click="showRegister = true">注册</el-link>
+          <span class="text-secondary">还没有账号？</span><el-link type="primary" underline="never" @click="showRegister = true">注册</el-link>
         </template>
         <template v-else>
-          <span class="text-secondary">已有账号？</span><el-link type="primary" :underline="false" @click="showRegister = false">返回登录</el-link>
+          <span class="text-secondary">已有账号？</span><el-link type="primary" underline="never" @click="showRegister = false">返回登录</el-link>
         </template>
       </div>
     </div>
