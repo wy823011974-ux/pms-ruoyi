@@ -126,24 +126,39 @@ body {
 .el-dialog__body { padding: 16px 24px; }
 
 /* 输入框 — 椭圆形胶囊风格 */
-.el-input__inner {
+/* 外层 wrapper — 去掉方框，统一圆角 */
+.el-input__wrapper {
   border-radius: 24px; border: none; background: var(--apple-fill-tertiary);
-  font-size: 15px; padding: 10px 16px; color: var(--apple-text);
+  box-shadow: none !important; padding: 0 4px;
   transition: background 200ms ease, box-shadow 200ms ease;
 }
-.el-input--large .el-input__inner { border-radius: 26px; padding: 12px 18px; font-size: 17px; }
-.el-input--small .el-input__inner { border-radius: 20px; padding: 6px 12px; font-size: 13px; }
-.el-input__inner:focus { background: var(--apple-surface); box-shadow: 0 0 0 3px rgba(0,122,255,0.2); }
+.el-input--large .el-input__wrapper { border-radius: 26px; }
+.el-input--small .el-input__wrapper { border-radius: 20px; }
+.el-input__wrapper:hover { background: var(--apple-fill-secondary); }
+
+/* 内层 input — 透明融入 wrapper */
+.el-input__inner {
+  border-radius: 24px; border: none; background: transparent;
+  font-size: 15px; padding: 8px 12px; color: var(--apple-text);
+  line-height: 1.5;
+}
+.el-input--large .el-input__inner { border-radius: 26px; padding: 10px 16px; font-size: 17px; }
+.el-input--small .el-input__inner { border-radius: 20px; padding: 4px 10px; font-size: 13px; }
+
+/* 聚焦态 — wrapper 显示蓝色光晕 */
+.el-input__wrapper:focus-within {
+  background: var(--apple-surface); box-shadow: 0 0 0 3px rgba(0,122,255,0.2) !important;
+}
 .el-input__inner::placeholder { color: var(--apple-text-tertiary); }
 
 /* 数字输入框 — 同样椭圆 */
-.el-input-number .el-input__inner { border-radius: 24px; }
-.el-input-number--large .el-input__inner { border-radius: 26px; }
-.el-input-number--small .el-input__inner { border-radius: 20px; }
+.el-input-number .el-input__wrapper { border-radius: 24px; }
+.el-input-number--large .el-input__wrapper { border-radius: 26px; }
+.el-input-number--small .el-input__wrapper { border-radius: 20px; }
 .el-input-number__decrease, .el-input-number__increase { border-radius: 24px; background: transparent; }
 
 /* 下拉选择框 — 同样椭圆 */
-.el-select .el-input__inner { background: var(--apple-fill-tertiary); border-radius: 24px; }
+.el-select .el-input__wrapper { background: var(--apple-fill-tertiary); border-radius: 24px; }
 
 /* 分页 */
 .el-pagination { justify-content: center; padding: 12px 0; }
