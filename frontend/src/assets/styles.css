@@ -126,38 +126,40 @@ body {
 .el-dialog__body { padding: 16px 24px; }
 
 /* 输入框 — 椭圆形胶囊风格 */
-/* 外层 wrapper — 去掉方框，统一圆角 */
+/* 外层 wrapper — 统一椭圆边框 */
 .el-input__wrapper {
-  border-radius: 24px; border: none; background: var(--apple-fill-tertiary);
+  border-radius: 24px; border: 0.5px solid var(--apple-separator-opaque);
+  background: var(--apple-fill-tertiary);
   box-shadow: none !important; padding: 0 4px;
-  transition: background 200ms ease, box-shadow 200ms ease;
+  transition: border-color 200ms ease, background 200ms ease, box-shadow 200ms ease;
 }
 .el-input--large .el-input__wrapper { border-radius: 26px; }
 .el-input--small .el-input__wrapper { border-radius: 20px; }
-.el-input__wrapper:hover { background: var(--apple-fill-secondary); }
+.el-input__wrapper:hover { border-color: var(--apple-text-tertiary); }
 
 /* 内层 input — 透明融入 wrapper */
 .el-input__inner {
-  border-radius: 24px; border: none; background: transparent;
+  border: none; background: transparent;
   font-size: 15px; padding: 8px 12px; color: var(--apple-text);
-  line-height: 1.5;
+  line-height: 1.5; border-radius: 0;
 }
-.el-input--large .el-input__inner { border-radius: 26px; padding: 10px 16px; font-size: 17px; }
-.el-input--small .el-input__inner { border-radius: 20px; padding: 4px 10px; font-size: 13px; }
+.el-input--large .el-input__inner { padding: 10px 16px; font-size: 17px; }
+.el-input--small .el-input__inner { padding: 4px 10px; font-size: 13px; }
 
-/* 聚焦态 — wrapper 显示蓝色光晕 */
+/* 聚焦态 — 蓝色边框 */
 .el-input__wrapper:focus-within {
-  background: var(--apple-surface); box-shadow: 0 0 0 3px rgba(0,122,255,0.2) !important;
+  border-color: var(--apple-blue); background: var(--apple-surface);
+  box-shadow: 0 0 0 3px rgba(0,122,255,0.15) !important;
 }
 .el-input__inner::placeholder { color: var(--apple-text-tertiary); }
 
-/* 数字输入框 — 同样椭圆 */
+/* 数字输入框 */
 .el-input-number .el-input__wrapper { border-radius: 24px; }
 .el-input-number--large .el-input__wrapper { border-radius: 26px; }
 .el-input-number--small .el-input__wrapper { border-radius: 20px; }
 .el-input-number__decrease, .el-input-number__increase { border-radius: 24px; background: transparent; }
 
-/* 下拉选择框 — 同样椭圆 */
+/* 下拉选择框 */
 .el-select .el-input__wrapper { background: var(--apple-fill-tertiary); border-radius: 24px; }
 
 /* 分页 */
