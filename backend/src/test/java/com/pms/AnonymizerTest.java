@@ -43,16 +43,16 @@ class AnonymizerTest {
 
     @Test
     void testMaskIdCard18() {
-        // 18位身份证：保留前6后4
+        // 18位身份证：保留前6后2，中间固定4个*
         String result = Anonymizer.maskIdCard("110101199003071234");
-        assertEquals("110101********1234", result);
+        assertEquals("110101****34", result);
     }
 
     @Test
     void testMaskIdCard15() {
         // 15位身份证
         String result = Anonymizer.maskIdCard("110101900307123");
-        assertEquals("110101*****7123", result);
+        assertEquals("110101****23", result);
     }
 
     @Test
@@ -106,7 +106,7 @@ class AnonymizerTest {
 
         Map<String, String> result = Anonymizer.anonymize(row);
 
-        assertEquals("110101********1234", result.get("shen_fen_zheng"));
+        assertEquals("110101****34", result.get("shen_fen_zheng"));
         assertEquals("普通数据", result.get("normal_field")); // 非敏感数据不变
     }
 

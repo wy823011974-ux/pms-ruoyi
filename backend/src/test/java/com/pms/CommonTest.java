@@ -82,7 +82,7 @@ class CommonTest {
         assertEquals("男", masked.get("xing_bie")); // 非敏感数据不变
         assertEquals("25", masked.get("nian_ling")); // 数字不变
         assertEquals("138****8001", masked.get("shou_ji_hao"));
-        assertEquals("110101********1234", masked.get("shen_fen_zheng"));
+        assertEquals("110101****34", masked.get("shen_fen_zheng"));
         assertTrue(masked.get("di_zhi").contains("*"), "地址应被脱敏");
     }
 

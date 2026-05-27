@@ -67,11 +67,15 @@ public class Anonymizer {
         return v.charAt(0) + "*".repeat(Math.max(0, v.length() - 1));
     }
 
+    /**
+     * 身份证脱敏：保留前6位+后2位，中间替换为 ****。
+     * 仅显示4个星号而非填充等长，防止结合出生日期列反推完整身份证号。
+     */
     public static String maskIdCard(String v) {
         v = v.trim();
-        if (v.length() >= 15) return v.substring(0, 6) + "*".repeat(Math.max(0, v.length() - 10)) + v.substring(v.length() - 4);
-        if (v.length() >= 6) return v.substring(0, 3) + "*".repeat(Math.max(0, v.length() - 3));
-        return "*".repeat(v.length());
+        if (v.length() >= 15) return v.substring(0, 6) + "****" + v.substring(v.length() - 2);
+        if (v.length() >= 6) return v.substring(0, 3) + "****" + v.substring(v.length() - 1);
+        return "****";
     }
 
     public static String maskPhone(String v) {
