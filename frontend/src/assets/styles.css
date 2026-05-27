@@ -1,77 +1,154 @@
 /* ============================================
-   项目管理系统 PMS v2.0 — 全局设计系统
-   UI/UX Pro Max: Micro-interactions + Green
+   PMS v3.0 — Apple Human Interface 设计系统
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-/* === 设计 Token === */
+/* === 色彩 Token === */
 :root {
-  --color-primary: #059669;
-  --color-primary-hover: #047857;
-  --color-primary-light: #ECFDF5;
-  --color-secondary: #10B981;
-  --color-accent: #D97706;
-  --color-bg: #F5F8F6;
-  --color-surface: #FFFFFF;
-  --color-muted: #F0F8F6;
-  --color-border: #E1F2ED;
-  --color-text: #0F172A;
-  --color-text-secondary: #64748B;
-  --color-text-muted: #94A3B8;
-  --color-success: #059669;
-  --color-warning: #D97706;
-  --color-danger: #DC2626;
-  --color-info: #3B82F6;
-  --space-xs: 4px; --space-sm: 8px; --space-md: 16px;
-  --space-lg: 24px; --space-xl: 32px; --space-2xl: 48px;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.06);
-  --shadow-lg: 0 10px 15px rgba(0,0,0,0.08);
-  --radius-sm: 6px; --radius-md: 8px;
-  --radius-lg: 12px; --radius-xl: 16px;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', "Cascadia Code", "Consolas", monospace;
-  --el-color-primary: #059669;
-  --el-color-primary-light-3: #34D399;
-  --el-color-primary-light-5: #6EE7B7;
-  --el-color-primary-light-7: #A7F3D0;
-  --el-color-primary-light-9: #D1FAE5;
-  --el-color-success: #059669;
-  --el-color-warning: #D97706;
-  --el-color-danger: #DC2626;
-  --el-font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  --el-border-radius-base: 8px;
+  --apple-blue: #007AFF;
+  --apple-blue-hover: #0062CC;
+  --apple-bg: #F2F2F7;
+  --apple-surface: #FFFFFF;
+  --apple-grouped: #E5E5EA;
+  --apple-text: #1C1C1E;
+  --apple-text-secondary: #8E8E93;
+  --apple-text-tertiary: #AEAEB2;
+  --apple-separator: #E5E5EA;
+  --apple-separator-opaque: #C6C6C8;
+  --apple-green: #34C759;
+  --apple-orange: #FF9500;
+  --apple-red: #FF3B30;
+  --apple-teal: #5AC8FA;
+  --apple-purple: #AF52DE;
+  --apple-fill: rgba(120,120,128,0.16);
+  --apple-fill-secondary: rgba(120,120,128,0.12);
+  --apple-fill-tertiary: rgba(118,118,128,0.08);
+  --apple-fill-quaternary: rgba(116,116,128,0.04);
+  --apple-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  --apple-shadow-modal: 0 8px 32px rgba(0,0,0,0.12);
+
+  /* 字体 */
+  --apple-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+  --apple-font-mono: "SF Mono", "Menlo", "Monaco", "Consolas", monospace;
+
+  /* Element Plus 覆盖 */
+  --el-color-primary: #007AFF;
+  --el-color-primary-light-3: #3395FF;
+  --el-color-primary-light-5: #66B0FF;
+  --el-color-primary-light-7: #99CAFF;
+  --el-color-primary-light-9: #CCE5FF;
+  --el-color-success: #34C759;
+  --el-color-warning: #FF9500;
+  --el-color-danger: #FF3B30;
+  --el-color-info: #5AC8FA;
+  --el-font-family: var(--apple-font);
+  --el-border-radius-base: 12px;
+  --el-border-color: var(--apple-separator);
+  --el-bg-color: var(--apple-surface);
+  --el-text-color-primary: var(--apple-text);
+  --el-text-color-regular: var(--apple-text);
+  --el-text-color-secondary: var(--apple-text-secondary);
 }
 
+/* === 全局重置 === */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  font-family: var(--font-sans); font-size: 14px; line-height: 1.6;
-  color: var(--color-text); background: var(--color-bg);
-  -webkit-font-smoothing: antialiased;
+  font-family: var(--apple-font); font-size: 15px; line-height: 1.6;
+  color: var(--apple-text); background: var(--apple-bg);
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.1px;
 }
 
+/* === 页面标题 === */
 .page-title {
-  font-size: 20px; font-weight: 600; color: var(--color-text); letter-spacing: -0.3px;
+  font-size: 28px; font-weight: 700; color: var(--apple-text);
+  letter-spacing: -0.3px; line-height: 1.2;
 }
 
-/* Element Plus 微调 */
+/* === Element Plus 组件 Apple 化 === */
+
+/* 卡片 — iOS 风格 */
 .el-card {
-  border-radius: var(--radius-lg) !important; border: 1px solid var(--color-border) !important;
-  box-shadow: var(--shadow-sm) !important; transition: box-shadow 200ms ease;
+  border-radius: 16px !important; border: none !important;
+  box-shadow: var(--apple-shadow) !important; background: var(--apple-surface);
+  transition: box-shadow 200ms ease;
 }
-.el-card:hover { box-shadow: var(--shadow-md) !important; }
-.el-card__header { padding: 14px 20px; font-weight: 600; font-size: 15px; border-bottom: 1px solid var(--color-border); }
-.el-table { font-size: 13px; border-radius: var(--radius-md); --el-table-header-bg-color: #F8FAF9; }
-.el-table th.el-table__cell { background: #F8FAF9; color: var(--color-text-secondary); font-weight: 500; font-size: 12px; }
-.el-button { font-weight: 500; transition: all 200ms ease; }
-.el-button:hover { transform: translateY(-1px); }
-.el-dialog { border-radius: var(--radius-xl); }
-.el-dialog__header { padding: 24px 24px 0; font-weight: 600; }
-.el-dialog__body { padding: 20px 24px; }
-.el-tag { border-radius: 4px; font-weight: 500; font-size: 12px; }
-.el-pagination { justify-content: center; padding: 8px 0; }
-.el-empty__description { color: var(--color-text-muted); }
-.el-drawer__header { padding: 20px 24px; font-weight: 600; border-bottom: 1px solid var(--color-border); }
-.el-drawer__body { padding: 20px 24px; }
+.el-card__header {
+  padding: 18px 20px 14px; font-weight: 600; font-size: 17px; line-height: 1.3;
+  border-bottom: 0.5px solid var(--apple-separator); color: var(--apple-text);
+}
+.el-card__body { padding: 16px 20px 20px; }
+
+/* 表格 — 去掉竖线 */
+.el-table {
+  font-size: 15px; border-radius: 12px; border: none;
+  --el-table-border-color: var(--apple-separator);
+}
+.el-table::before { display: none; }
+.el-table td.el-table__cell, .el-table th.el-table__cell.is-leaf {
+  border-bottom: 0.5px solid var(--apple-separator); border-right: none;
+}
+.el-table th.el-table__cell {
+  background: transparent; color: var(--apple-text-secondary);
+  font-weight: 500; font-size: 13px; text-transform: none; letter-spacing: 0;
+  padding: 10px 0 10px 12px;
+}
+.el-table td.el-table__cell { padding: 12px 0 12px 12px; }
+.el-table__body tr:hover > td { background: var(--apple-fill-quaternary) !important; }
+
+/* 按钮 — 圆角胶囊 */
+.el-button {
+  font-weight: 500; font-size: 15px; border-radius: 12px;
+  transition: all 200ms cubic-bezier(0.25, 0.1, 0.25, 1.0);
+  letter-spacing: 0; border: none;
+}
+.el-button--default {
+  background: var(--apple-fill); color: var(--apple-text);
+}
+.el-button--default:hover { background: var(--apple-fill-secondary); }
+.el-button--primary {
+  background: var(--apple-blue); box-shadow: 0 2px 8px rgba(0,122,255,0.3);
+}
+.el-button--primary:hover { background: var(--apple-blue-hover); transform: translateY(-1px); }
+.el-button--small { font-size: 13px; border-radius: 10px; padding: 5px 12px; }
+.el-button--danger { background: transparent; color: var(--apple-red); }
+.el-button--danger:hover { background: rgba(255,59,48,0.08); }
+.el-button--success { background: transparent; color: var(--apple-green); }
+.el-button--warning { background: transparent; color: var(--apple-orange); }
+
+/* 标签 */
+.el-tag { border-radius: 8px; font-weight: 500; font-size: 11px; padding: 2px 8px; border: none; }
+
+/* 弹窗 */
+.el-dialog { border-radius: 20px; box-shadow: var(--apple-shadow-modal); }
+.el-dialog__header { padding: 24px 24px 8px; font-weight: 700; font-size: 17px; }
+.el-dialog__body { padding: 16px 24px; }
+
+/* 输入框 */
+.el-input__inner {
+  border-radius: 12px; border: none; background: var(--apple-fill-tertiary);
+  font-size: 15px; padding: 10px 14px; color: var(--apple-text);
+  transition: background 200ms ease, box-shadow 200ms ease;
+}
+.el-input__inner:focus { background: var(--apple-surface); box-shadow: 0 0 0 3px rgba(0,122,255,0.2); }
+.el-input__inner::placeholder { color: var(--apple-text-tertiary); }
+.el-select .el-input__inner { background: var(--apple-fill-tertiary); }
+
+/* 分页 */
+.el-pagination { justify-content: center; padding: 12px 0; }
+.el-pagination button, .el-pager li {
+  border-radius: 8px; font-weight: 500; font-size: 14px;
+}
+
+/* 菜单 */
+.el-menu-item [class^="el-icon"] { font-size: 20px; margin-right: 10px; }
+
+/* 抽屉 */
+.el-drawer__header { padding: 20px 24px; font-weight: 700; font-size: 17px; border-bottom: 0.5px solid var(--apple-separator); }
+.el-drawer__body { padding: 16px 24px; }
+
+/* 空状态 */
+.el-empty__description { color: var(--apple-text-tertiary); font-size: 15px; }
+
+/* Switch */
+.el-switch.is-checked .el-switch__core { background: var(--apple-green); border-color: var(--apple-green); }

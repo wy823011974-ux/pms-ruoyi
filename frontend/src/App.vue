@@ -6,14 +6,10 @@
 </script>
 
 <style>
-/* 代码/编号标签 */
+/* Apple 风格代码标签 */
 code, .mono {
-  font-family: var(--font-mono); font-size: 12px;
-  background: var(--color-primary-light); color: var(--color-primary);
-  padding: 2px 8px; border-radius: 4px; font-weight: 500;
+  font-family: var(--apple-font-mono); font-size: 12px; font-weight: 500;
+  background: var(--apple-fill-tertiary); color: var(--apple-text-secondary);
+  padding: 2px 8px; border-radius: 6px;
 }
-
-/* 过渡动画 */
-.fade-enter-active, .fade-leave-active { transition: opacity 200ms ease; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>
