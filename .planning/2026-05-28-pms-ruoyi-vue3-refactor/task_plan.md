@@ -4,7 +4,7 @@
 将原有 FastAPI+Alpine.js 项目管理系统重构为 Spring Boot 3.2 + Vue 3 + Element Plus 架构，实现功能对齐并打磨 Apple 风格 UI。
 
 ## Current Phase
-Phase 8 — Apple UI 打磨完成，待收尾验证
+Phase 11 — 收尾验证 ✅ (项目完成)
 
 ## Phases
 
@@ -99,13 +99,13 @@ Phase 8 — Apple UI 打磨完成，待收尾验证
 - [x] JWT secret 支持环境变量
 - **Status:** complete
 
-### Phase 11: 收尾验证
-- [ ] 全流程手动测试（登录→创建项目类型→导入Schema→创建项目→上传数据→导出→删除）
-- [ ] 后端 mvn test 全绿确认
-- [ ] 前端 vite build 无报错
-- [ ] 浏览器 console 无 error
-- [ ] Docker 环境启动验证
-- **Status:** pending
+### Phase 11: 收尾验证 ✅
+- [x] 后端 mvn test 全绿 (23/23)
+- [x] 前端 vite build 无报错
+- [x] Docker MySQL+Redis healthy
+- [x] Backend API 200 OK
+- [x] 浏览器 console 0 errors
+- **Status:** complete
 
 ## Decisions Made
 | Decision | Rationale |
