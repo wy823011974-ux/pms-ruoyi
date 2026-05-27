@@ -1,46 +1,54 @@
 <template>
-  <div class="login-container">
-    <el-card class="login-card">
-      <h2 class="login-title">项目管理系统 v2.0</h2>
-      <el-form v-if="!showRegister" ref="loginFormRef" :model="loginForm" :rules="loginRules" @submit.prevent="handleLogin">
+  <div class="login-page">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-icon">P</div>
+        <h2>项目管理系统</h2>
+        <p class="login-subtitle">海南海拔市场调查集团</p>
+      </div>
+
+      <el-form v-if="!showRegister" ref="loginFormRef" :model="loginForm" :rules="loginRules" @submit.prevent="handleLogin" class="login-form">
         <el-form-item prop="phone">
-          <el-input v-model="loginForm.phone" placeholder="手机号" prefix-icon="Phone" size="large" />
+          <el-input v-model="loginForm.phone" placeholder="手机号" size="large" :prefix-icon="Phone" />
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-model="loginForm.password" type="password" placeholder="密码" prefix-icon="Lock" size="large" show-password @keyup.enter="handleLogin" />
+          <el-input v-model="loginForm.password" type="password" placeholder="密码" size="large" :prefix-icon="Lock" show-password @keyup.enter="handleLogin" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" size="large" :loading="loading" class="login-btn" @click="handleLogin">登 录</el-button>
         </el-form-item>
-        <div class="text-center text-sm text-gray-500">
-          还没有账号？<el-link type="primary" @click="showRegister = true">注册</el-link>
-        </div>
       </el-form>
 
-      <el-form v-else ref="registerFormRef" :model="registerForm" :rules="registerRules" @submit.prevent="handleRegister">
+      <el-form v-else ref="registerFormRef" :model="registerForm" :rules="registerRules" @submit.prevent="handleRegister" class="login-form">
         <el-form-item prop="phone">
-          <el-input v-model="registerForm.phone" placeholder="手机号 *" size="large" />
+          <el-input v-model="registerForm.phone" placeholder="手机号" size="large" />
         </el-form-item>
         <el-form-item prop="displayName">
-          <el-input v-model="registerForm.displayName" placeholder="姓名 *" size="large" />
+          <el-input v-model="registerForm.displayName" placeholder="姓名" size="large" />
         </el-form-item>
         <el-form-item prop="department">
-          <el-input v-model="registerForm.department" placeholder="部门/单位 *" size="large" />
+          <el-input v-model="registerForm.department" placeholder="部门/单位" size="large" />
         </el-form-item>
         <el-form-item prop="email">
-          <el-input v-model="registerForm.email" placeholder="邮箱 *" size="large" />
+          <el-input v-model="registerForm.email" placeholder="邮箱" size="large" />
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-model="registerForm.password" type="password" placeholder="密码 (8位+字母+数字)" size="large" show-password />
+          <el-input v-model="registerForm.password" type="password" placeholder="密码（至少8位）" size="large" show-password />
         </el-form-item>
         <el-form-item>
-          <el-button type="success" size="large" :loading="loading" class="login-btn" @click="handleRegister">注 册</el-button>
+          <el-button type="primary" size="large" :loading="loading" class="login-btn" @click="handleRegister">注 册</el-button>
         </el-form-item>
-        <div class="text-center text-sm text-gray-500">
-          已有账号？<el-link type="primary" @click="showRegister = false">返回登录</el-link>
-        </div>
       </el-form>
-    </el-card>
+
+      <div class="login-footer">
+        <template v-if="!showRegister">
+          还没有账号？<el-link type="primary" :underline="false" @click="showRegister = true">注册</el-link>
+        </template>
+        <template v-else>
+          已有账号？<el-link type="primary" :underline="false" @click="showRegister = false">返回登录</el-link>
+        </template>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -50,6 +58,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { register } from '@/api/auth'
 import { ElMessage } from 'element-plus'
+import { Phone, Lock } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const store = useUserStore()
@@ -88,11 +97,22 @@ async function handleRegister() {
 </script>
 
 <style scoped>
-.login-container {
+.login-page {
   display: flex; align-items: center; justify-content: center; min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #f0f2f5;
 }
-.login-card { width: 420px; padding: 20px 30px; }
-.login-title { text-align: center; margin-bottom: 24px; font-size: 22px; color: #303133; }
-.login-btn { width: 100%; }
+.login-card { width: 400px; padding: 40px 36px; background: #fff; border-radius: 8px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); }
+
+.login-header { text-align: center; margin-bottom: 32px; }
+.login-icon {
+  width: 48px; height: 48px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
+  background: #ecf5ff; color: #409eff; border-radius: 12px;
+  font-size: 22px; font-weight: 700;
+}
+.login-header h2 { font-size: 22px; font-weight: 600; color: #303133; margin: 0 0 4px; letter-spacing: 1px; }
+.login-subtitle { font-size: 13px; color: #909399; margin: 0; }
+
+.login-form { margin-top: 8px; }
+.login-btn { width: 100%; height: 44px; font-size: 15px; letter-spacing: 2px; }
+.login-footer { text-align: center; margin-top: 16px; font-size: 13px; color: #909399; }
 </style>
