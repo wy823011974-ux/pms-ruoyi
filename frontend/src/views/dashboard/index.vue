@@ -10,20 +10,20 @@
         </div>
       </el-col>
       <el-col :span="6">
-        <div class="stat-item">
-          <span class="stat-value active">{{ stats.activeProjects }}</span>
+        <div class="stat-item accent">
+          <span class="stat-value">{{ stats.activeProjects }}</span>
           <span class="stat-label">进行中</span>
         </div>
       </el-col>
       <el-col :span="6">
-        <div class="stat-item">
-          <span class="stat-value files">{{ stats.totalFiles }}</span>
+        <div class="stat-item secondary">
+          <span class="stat-value">{{ stats.totalFiles }}</span>
           <span class="stat-label">文件数</span>
         </div>
       </el-col>
       <el-col :span="6">
-        <div class="stat-item">
-          <span class="stat-value data">{{ stats.totalDataRows }}</span>
+        <div class="stat-item warn">
+          <span class="stat-value">{{ stats.totalDataRows }}</span>
           <span class="stat-label">数据行数</span>
         </div>
       </el-col>
@@ -51,7 +51,7 @@
           <template #header><span class="font-semibold">最近项目</span></template>
           <div v-if="recentProjects.length" class="recent-list">
             <div v-for="p in recentProjects" :key="p.id" class="recent-item" @click="$router.push('/survey/' + p.id)">
-              <span class="recent-code">{{ p.code }}</span>
+              <code>{{ p.code }}</code>
               <span class="recent-name">{{ p.name }}</span>
               <el-tag :type="p.status === 'IN_PROGRESS' ? '' : p.status === 'COMPLETED' ? 'success' : 'info'" size="small">
                 {{ p.status === 'IN_PROGRESS' ? '进行中' : p.status === 'COMPLETED' ? '已完结' : '已归档' }}
@@ -75,41 +75,36 @@ const stats = ref({ totalProjects: 0, activeProjects: 0, totalFiles: 0, totalDat
 const recentProjects = ref([])
 
 onMounted(async () => {
-  try {
-    const res = await get('/dashboard/stats')
-    if (res.code === 200) stats.value = res.data
-  } catch { /* ignore */ }
-
-  // 加载最近项目
-  try {
-    const res = await get('/projects', { pageSize: 5 })
-    if (res.code === 200) recentProjects.value = res.data?.rows || []
-  } catch { /* ignore */ }
+  try { const res = await get('/dashboard/stats'); if (res.code === 200) stats.value = res.data } catch {}
+  try { const res = await get('/projects', { pageSize: 5 }); if (res.code === 200) recentProjects.value = res.data?.rows || [] } catch {}
 })
 </script>
 
 <style scoped>
 .stat-item {
-  text-align: center; padding: 24px 16px; border-radius: 8px;
-  background: #f5f7fa; transition: box-shadow 0.2s;
+  text-align: center; padding: 24px 16px; border-radius: 12px;
+  background: #fff; border: 1px solid var(--color-border);
+  transition: box-shadow 200ms ease, transform 200ms ease;
 }
-.stat-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-.stat-value { display: block; font-size: 32px; font-weight: 700; color: #303133; line-height: 1.2; }
-.stat-value.active { color: #409eff; }
-.stat-value.files { color: #67c23a; }
-.stat-value.data { color: #e6a23c; }
-.stat-label { display: block; margin-top: 4px; font-size: 13px; color: #909399; }
+.stat-item:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.stat-item.accent { background: #ECFDF5; border-color: #A7F3D0; }
+.stat-item.secondary { background: #F0FDF4; border-color: #86EFAC; }
+.stat-item.warn { background: #FFFBEB; border-color: #FDE68A; }
+.stat-value { display: block; font-size: 32px; font-weight: 700; color: var(--color-text); line-height: 1.2; }
+.stat-item.accent .stat-value { color: #059669; }
+.stat-item.secondary .stat-value { color: #16A34A; }
+.stat-item.warn .stat-value { color: #D97706; }
+.stat-label { display: block; margin-top: 4px; font-size: 13px; color: var(--color-text-secondary); }
 
 .quick-actions { display: flex; flex-direction: column; gap: 8px; }
 .quick-actions .el-button { justify-content: flex-start; margin-left: 0; }
 
 .recent-list { display: flex; flex-direction: column; }
 .recent-item {
-  display: flex; align-items: center; gap: 12px; padding: 8px 0;
-  border-bottom: 1px solid #f0f0f0; cursor: pointer;
+  display: flex; align-items: center; gap: 12px; padding: 10px 0;
+  border-bottom: 1px solid var(--color-border); cursor: pointer; transition: background 150ms ease;
 }
 .recent-item:last-child { border-bottom: none; }
-.recent-item:hover { background: #f5f7fa; margin: 0 -20px; padding: 8px 20px; border-radius: 4px; }
-.recent-code { font-family: monospace; font-size: 12px; color: #909399; min-width: 180px; }
-.recent-name { flex: 1; font-size: 14px; color: #303133; }
+.recent-item:hover { background: var(--color-muted); margin: 0 -20px; padding: 10px 20px; border-radius: 8px; }
+.recent-name { flex: 1; font-size: 14px; color: var(--color-text); font-weight: 500; }
 </style>

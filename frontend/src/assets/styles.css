@@ -1,54 +1,77 @@
 /* ============================================
-   项目管理系统 — 全局设计系统
-   基于 UI/UX Pro Max Product Register 准则
+   项目管理系统 PMS v2.0 — 全局设计系统
+   UI/UX Pro Max: Micro-interactions + Green
    ============================================ */
 
-/* === 色彩变量 === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* === 设计 Token === */
 :root {
-  --el-color-primary: #409eff;
-  --el-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --color-primary: #059669;
+  --color-primary-hover: #047857;
+  --color-primary-light: #ECFDF5;
+  --color-secondary: #10B981;
+  --color-accent: #D97706;
+  --color-bg: #F5F8F6;
+  --color-surface: #FFFFFF;
+  --color-muted: #F0F8F6;
+  --color-border: #E1F2ED;
+  --color-text: #0F172A;
+  --color-text-secondary: #64748B;
+  --color-text-muted: #94A3B8;
+  --color-success: #059669;
+  --color-warning: #D97706;
+  --color-danger: #DC2626;
+  --color-info: #3B82F6;
+  --space-xs: 4px; --space-sm: 8px; --space-md: 16px;
+  --space-lg: 24px; --space-xl: 32px; --space-2xl: 48px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.08);
+  --radius-sm: 6px; --radius-md: 8px;
+  --radius-lg: 12px; --radius-xl: 16px;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', "Cascadia Code", "Consolas", monospace;
+  --el-color-primary: #059669;
+  --el-color-primary-light-3: #34D399;
+  --el-color-primary-light-5: #6EE7B7;
+  --el-color-primary-light-7: #A7F3D0;
+  --el-color-primary-light-9: #D1FAE5;
+  --el-color-success: #059669;
+  --el-color-warning: #D97706;
+  --el-color-danger: #DC2626;
+  --el-font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --el-border-radius-base: 8px;
 }
 
-/* === 全局基础 === */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  font-size: 14px; line-height: 1.6;
-  color: #303133;
-  background: #f0f2f5;
+  font-family: var(--font-sans); font-size: 14px; line-height: 1.6;
+  color: var(--color-text); background: var(--color-bg);
   -webkit-font-smoothing: antialiased;
 }
 
-/* 页面标题 */
-.page-title { font-size: 20px; font-weight: 600; margin-bottom: 8px; color: #303133; }
+.page-title {
+  font-size: 20px; font-weight: 600; color: var(--color-text); letter-spacing: -0.3px;
+}
 
-/* === Element Plus 组件微调 === */
-
-/* 卡片 */
-.el-card { border-radius: 8px; border: 1px solid #e8eaed; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-.el-card__header { padding: 14px 20px; font-weight: 600; font-size: 15px; }
-
-/* 表格 */
-.el-table { font-size: 13px; border-radius: 6px; }
-.el-table th.el-table__cell { background: #fafafa; color: #606266; font-weight: 500; font-size: 12px; }
-
-/* 按钮 */
-.el-button { font-weight: 500; }
-
-/* 弹窗 */
-.el-dialog { border-radius: 8px; }
-.el-dialog__header { padding: 20px 24px 0; font-weight: 600; }
+/* Element Plus 微调 */
+.el-card {
+  border-radius: var(--radius-lg) !important; border: 1px solid var(--color-border) !important;
+  box-shadow: var(--shadow-sm) !important; transition: box-shadow 200ms ease;
+}
+.el-card:hover { box-shadow: var(--shadow-md) !important; }
+.el-card__header { padding: 14px 20px; font-weight: 600; font-size: 15px; border-bottom: 1px solid var(--color-border); }
+.el-table { font-size: 13px; border-radius: var(--radius-md); --el-table-header-bg-color: #F8FAF9; }
+.el-table th.el-table__cell { background: #F8FAF9; color: var(--color-text-secondary); font-weight: 500; font-size: 12px; }
+.el-button { font-weight: 500; transition: all 200ms ease; }
+.el-button:hover { transform: translateY(-1px); }
+.el-dialog { border-radius: var(--radius-xl); }
+.el-dialog__header { padding: 24px 24px 0; font-weight: 600; }
 .el-dialog__body { padding: 20px 24px; }
-
-/* 标签 */
-.el-tag { border-radius: 4px; font-weight: 500; }
-
-/* 菜单 */
-.el-menu-item [class^="el-icon"] { font-size: 18px; }
-
-/* 分页 */
+.el-tag { border-radius: 4px; font-weight: 500; font-size: 12px; }
 .el-pagination { justify-content: center; padding: 8px 0; }
-
-/* 空状态 */
-.el-empty__description { color: #909399; }
+.el-empty__description { color: var(--color-text-muted); }
+.el-drawer__header { padding: 20px 24px; font-weight: 600; border-bottom: 1px solid var(--color-border); }
+.el-drawer__body { padding: 20px 24px; }
