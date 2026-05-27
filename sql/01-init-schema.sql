@@ -3,6 +3,10 @@
 -- 数据库初始化脚本 (MySQL 8.0)
 -- ============================================
 
+-- 强制客户端使用 UTF-8 编码，避免中文乱码
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+
 CREATE DATABASE IF NOT EXISTS pms_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE pms_db;
 
