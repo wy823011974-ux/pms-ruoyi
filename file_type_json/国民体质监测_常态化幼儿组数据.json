@@ -1,0 +1,649 @@
+{
+  "project_type_name": "国民体质监测",
+  "file_type_count": 1,
+  "schemas": [
+    {
+      "project_type": {
+        "name": "国民体质监测",
+        "description": "",
+        "code": "GMTZ"
+      },
+      "file_type_config": {
+        "name": "常态化测试数据-幼儿组",
+        "code": "changtaihuaceshishuju-youerzu",
+        "skip_rows": 0,
+        "sheet_name": "国民体质幼儿组",
+        "has_fields": true,
+        "sort_order": 1
+      },
+      "columns": [
+        {
+          "key": "shen_fen_zheng",
+          "name": "身份证",
+          "type": "text",
+          "required": true,
+          "sensitive": true,
+          "anonymize_rule": "id_card"
+        },
+        {
+          "key": "xing_ming",
+          "name": "姓名",
+          "type": "text",
+          "required": true,
+          "sensitive": true,
+          "anonymize_rule": "name"
+        },
+        {
+          "key": "xing_bie",
+          "name": "性别",
+          "type": "select",
+          "required": false
+        },
+        {
+          "key": "chu_sheng_ri_qi",
+          "name": "出生日期",
+          "type": "date",
+          "required": false
+        },
+        {
+          "key": "ce_shi_nian_ling",
+          "name": "测试年龄",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "nian_ling_zu",
+          "name": "年龄组",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "cheng_xiang_zhong_lei",
+          "name": "城乡种类",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "ji_gou_ming_cheng",
+          "name": "机构名称",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "ji_gou_dai_ma",
+          "name": "机构代码",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "ce_shi_shi_jian",
+          "name": "测试时间",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "ce_shi_shi_jian_2",
+          "name": "测试时间_2",
+          "type": "date",
+          "required": false
+        },
+        {
+          "key": "shen_gao",
+          "name": "身高",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "shen_gao_de_fen",
+          "name": "身高得分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "shen_gao_quan_zhong_fen",
+          "name": "身高权重分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "shen_gao_ping_jia",
+          "name": "身高评价",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "shen_gao_ce_shi_ri_qi",
+          "name": "身高测试日期",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "shen_gao_gps",
+          "name": "身高GPS",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "zuo_gao",
+          "name": "坐高",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "zuo_gao_de_fen",
+          "name": "坐高得分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "zuo_gao_ping_jia",
+          "name": "坐高评价",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "zuo_gao_ce_shi_ri_qi",
+          "name": "坐高测试日期",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "zuo_gao_gps",
+          "name": "坐高GPS",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "ti_zhong",
+          "name": "体重",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "ti_zhong_ce_shi_ri_qi",
+          "name": "体重测试日期",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "ti_zhong_gps",
+          "name": "体重GPS",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "ti_zhong_zhi_shu",
+          "name": "体重指数",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "ti_zhong_zhi_shu_de_fen",
+          "name": "体重指数得分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "ti_zhong_zhi_shu_quan_zhong_fen",
+          "name": "体重指数权重分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "ti_zhong_zhi_shu_ping_jia",
+          "name": "体重指数评价",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "ti_zhong_zhi_shu_ce_shi_ri_qi",
+          "name": "体重指数测试日期",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "ti_zhong_zhi_shu_gps",
+          "name": "体重指数GPS",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "xiong_wei",
+          "name": "胸围",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "xiong_wei_de_fen",
+          "name": "胸围得分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "xiong_wei_ping_jia",
+          "name": "胸围评价",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "xiong_wei_ce_shi_ri_qi",
+          "name": "胸围测试日期",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "xiong_wei_gps",
+          "name": "胸围GPS",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "ti_zhi_lv",
+          "name": "体脂率",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "ti_zhi_lv_ce_shi_ri_qi_1",
+          "name": "体脂率测试日期_1",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "ti_zhi_lv_gps_1",
+          "name": "体脂率GPS_1",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "an_jing_xin_lv",
+          "name": "安静心率",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "an_jing_xin_lv_de_fen",
+          "name": "安静心率得分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "an_jing_xin_lv_ping_jia",
+          "name": "安静心率评价",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "an_jing_xin_lv_ce_shi_ri_qi",
+          "name": "安静心率测试日期",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "an_jing_xin_lv_gps",
+          "name": "安静心率GPS",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "wo_li",
+          "name": "握力",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "wo_li_de_fen",
+          "name": "握力得分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "wo_li_quan_zhong_fen",
+          "name": "握力权重分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "wo_li_ping_jia",
+          "name": "握力评价",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "wo_li_ce_shi_ri_qi",
+          "name": "握力测试日期",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "wo_li_gps",
+          "name": "握力GPS",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "li_ding_tiao_yuan",
+          "name": "立定跳远",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "li_ding_tiao_yuan_de_fen",
+          "name": "立定跳远得分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "li_ding_tiao_yuan_quan_zhong_fen",
+          "name": "立定跳远权重分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "li_ding_tiao_yuan_ping_jia",
+          "name": "立定跳远评价",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "li_ding_tiao_yuan_ce_shi_ri_qi",
+          "name": "立定跳远测试日期",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "li_ding_tiao_yuan_gps",
+          "name": "立定跳远GPS",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "zuo_wei_ti_qian_qu",
+          "name": "坐位体前屈",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "zuo_wei_ti_qian_qu_de_fen",
+          "name": "坐位体前屈得分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "zuo_wei_ti_qian_qu_quan_zhong_fen",
+          "name": "坐位体前屈权重分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "zuo_wei_ti_qian_qu_ping_jia",
+          "name": "坐位体前屈评价",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "zuo_wei_ti_qian_qu_ce_shi_ri_qi",
+          "name": "坐位体前屈测试日期",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "zuo_wei_ti_qian_qu_gps",
+          "name": "坐位体前屈GPS",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "shuang_jiao_lian_xu_tiao",
+          "name": "双脚连续跳",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "shuang_jiao_lian_xu_tiao_de_fen",
+          "name": "双脚连续跳得分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "shuang_jiao_lian_xu_tiao_quan_zhong_fen",
+          "name": "双脚连续跳权重分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "shuang_jiao_lian_xu_tiao_ping_jia",
+          "name": "双脚连续跳评价",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "shuang_jiao_lian_xu_tiao_ce_shi_ri_qi",
+          "name": "双脚连续跳测试日期",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "shuang_jiao_lian_xu_tiao_gps",
+          "name": "双脚连续跳GPS",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "shiwu_mi_rao_zhang_ai_pao",
+          "name": "15米绕障碍跑",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "shiwu_mi_rao_zhang_ai_pao_de_fen",
+          "name": "15米绕障碍跑得分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "shiwu_mi_rao_zhang_ai_pao_quan_zhong_fen",
+          "name": "15米绕障碍跑权重分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "shiwu_mi_rao_zhang_ai_pao_ping_jia",
+          "name": "15米绕障碍跑评价",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "shiwu_mi_rao_zhang_ai_pao_ce_shi_ri_qi",
+          "name": "15米绕障碍跑测试日期",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "shiwu_mi_rao_zhang_ai_pao_gps",
+          "name": "15米绕障碍跑GPS",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "zou_ping_heng_mu",
+          "name": "走平衡木",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "shi_fou_nuo_bu_heng_zou",
+          "name": "是否挪步横走",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "shi_fou_nuo_bu_heng_zou_de_fen",
+          "name": "是否挪步横走得分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "zou_ping_heng_mu_quan_zhong_fen",
+          "name": "走平衡木权重分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "zou_ping_heng_mu_ping_jia",
+          "name": "走平衡木评价",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "zou_ping_heng_mu_ce_shi_ri_qi",
+          "name": "走平衡木测试日期",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "zou_ping_heng_mu_gps",
+          "name": "走平衡木GPS",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "zong_he_de_fen",
+          "name": "综合得分",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "zong_he_ping_jia",
+          "name": "综合评价",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "qu_zhi_ti_zhong_shi_ce_zhi",
+          "name": "去脂体重的实测值（千克）",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "ti_zhi_fang_liang_shi_ce_zhi",
+          "name": "体脂肪量的实测值（千克）",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "shen_ti_ji_rou_liang_shi_ce_zhi",
+          "name": "身体肌肉量的实测值（千克）",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "zuo_shang_zhi_ji_rou_liang",
+          "name": "左上肢肌肉量的实测值（千克）",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "you_shang_zhi_ji_rou_liang",
+          "name": "右上肢肌肉量的实测值（千克）",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "qu_gan_ji_rou_liang",
+          "name": "躯干肌肉量的实测值（千克）",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "zuo_xia_zhi_ji_rou_liang",
+          "name": "左下肢肌肉量的实测值（千克）",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "you_xia_zhi_ji_rou_liang",
+          "name": "右下肢肌肉量的实测值（千克）",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "qu_gan_zhi_fang_liang_shi_ce_zhi",
+          "name": "躯干脂肪量的实测值（千克）",
+          "type": "number",
+          "required": false
+        },
+        {
+          "key": "zhi_fang_lv_jie_guo",
+          "name": "脂肪率结果的FAT/W（%）",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "ti_zhi_lv_ce_shi_shi_jian",
+          "name": "体脂率测试时间",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "ti_zhi_lv_gps_2",
+          "name": "体脂率gps",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "gong_zuo_dan_wei",
+          "name": "工作单位",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "min_zu",
+          "name": "民族",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "zhi_cheng",
+          "name": "职称",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "hang_ye",
+          "name": "行业",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "zhi_ye",
+          "name": "职业",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "wen_hua_cheng_du",
+          "name": "文化程度",
+          "type": "text",
+          "required": false
+        },
+        {
+          "key": "jia_ting_zhu_zhi",
+          "name": "家庭住址",
+          "type": "text",
+          "required": false,
+          "sensitive": true,
+          "anonymize_rule": "address"
+        },
+        {
+          "key": "dian_hua",
+          "name": "电话",
+          "type": "text",
+          "required": false,
+          "sensitive": true,
+          "anonymize_rule": "phone"
+        }
+      ]
+    }
+  ]
+}

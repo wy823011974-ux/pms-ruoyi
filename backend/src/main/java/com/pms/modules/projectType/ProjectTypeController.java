@@ -175,7 +175,7 @@ public class ProjectTypeController {
         PmsProjectType pt = ptMapper.selectById(typeId);
         if (pt == null) return Result.fail("项目类型不存在");
 
-        int fileTypesCreated = 0, fieldsCreated = 0;
+        int fileTypesCreated = 0, fileTypesUpdated = 0, fieldsCreated = 0;
         Object schemasObj = body.get("schemas");
         if (!(schemasObj instanceof List)) return Result.fail("schemas 必须是数组");
 
@@ -189,17 +189,42 @@ public class ProjectTypeController {
             Map<String, Object> ftcMap = (Map<String, Object>) schema.get("file_type_config");
             if (ftcMap == null) continue;
 
-            PmsFileTypeConfig ftc = new PmsFileTypeConfig();
-            ftc.setProjectTypeId(typeId);
-            ftc.setName((String) ftcMap.get("name"));
-            ftc.setCode((String) ftcMap.getOrDefault("code",
-                    cn.hutool.extra.pinyin.PinyinUtil.getPinyin((String) ftcMap.get("name"), "").toLowerCase().replace(" ", "_")));
-            ftc.setSkipRows((Integer) ftcMap.getOrDefault("skip_rows", 0));
-            ftc.setSheetName((String) ftcMap.get("sheet_name"));
-            ftc.setHasFields(Boolean.TRUE.equals(ftcMap.get("has_fields")) || Integer.valueOf(1).equals(ftcMap.get("has_fields")));
-            ftc.setSortOrder((Integer) ftcMap.getOrDefault("sort_order", 0));
-            ftcMapper.insert(ftc);
-            fileTypesCreated++;
+            String code = (String) ftcMap.getOrDefault("code",
+                    cn.hutool.extra.pinyin.PinyinUtil.getPinyin((String) ftcMap.get("name"), "").toLowerCase().replace(" ", "_"));
+
+            // 检查是否已存在同编码的文件类型配置
+            PmsFileTypeConfig existingFtc = ftcMapper.selectOne(
+                    new LambdaQueryWrapper<PmsFileTypeConfig>()
+                            .eq(PmsFileTypeConfig::getProjectTypeId, typeId)
+                            .eq(PmsFileTypeConfig::getCode, code));
+
+            PmsFileTypeConfig ftc;
+            if (existingFtc != null) {
+                // 已存在：更新 + 删除旧字段后重建
+                ftc = existingFtc;
+                fileTypesUpdated++;
+                ftc.setName((String) ftcMap.get("name"));
+                ftc.setSkipRows((Integer) ftcMap.getOrDefault("skip_rows", 0));
+                ftc.setSheetName((String) ftcMap.get("sheet_name"));
+                ftc.setHasFields(Boolean.TRUE.equals(ftcMap.get("has_fields")) || Integer.valueOf(1).equals(ftcMap.get("has_fields")));
+                ftc.setSortOrder((Integer) ftcMap.getOrDefault("sort_order", 0));
+                ftcMapper.updateById(ftc);
+                // 删除旧字段
+                fdMapper.delete(new LambdaQueryWrapper<PmsFieldDefinition>()
+                        .eq(PmsFieldDefinition::getFileTypeConfigId, ftc.getId()));
+            } else {
+                // 新创建
+                ftc = new PmsFileTypeConfig();
+                ftc.setProjectTypeId(typeId);
+                ftc.setName((String) ftcMap.get("name"));
+                ftc.setCode(code);
+                ftc.setSkipRows((Integer) ftcMap.getOrDefault("skip_rows", 0));
+                ftc.setSheetName((String) ftcMap.get("sheet_name"));
+                ftc.setHasFields(Boolean.TRUE.equals(ftcMap.get("has_fields")) || Integer.valueOf(1).equals(ftcMap.get("has_fields")));
+                ftc.setSortOrder((Integer) ftcMap.getOrDefault("sort_order", 0));
+                ftcMapper.insert(ftc);
+                fileTypesCreated++;
+            }
 
             // 解析字段定义
             Object columnsObj = schema.get("columns");
@@ -242,6 +267,7 @@ public class ProjectTypeController {
         Map<String, Object> result = new HashMap<>();
         result.put("message", "导入成功");
         result.put("fileTypesCreated", fileTypesCreated);
+        result.put("fileTypesUpdated", fileTypesUpdated);
         result.put("fieldsCreated", fieldsCreated);
         return Result.ok(result);
     }
