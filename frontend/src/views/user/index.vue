@@ -6,7 +6,6 @@
     </div>
 
     <el-table :data="users" border stripe v-loading="loading">
-      <el-table-column label="#" width="50" type="index" />
       <el-table-column prop="displayName" label="姓名" min-width="90" />
       <el-table-column prop="phone" label="手机号" width="130" />
       <el-table-column prop="email" label="邮箱" min-width="150" />

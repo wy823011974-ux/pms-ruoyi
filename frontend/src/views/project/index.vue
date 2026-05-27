@@ -23,7 +23,6 @@
           <div class="text-sm text-gray-500 space-y-1">
             <div><code class="text-blue-600 bg-blue-50 px-1 rounded">{{ p.code }}</code></div>
             <div>{{ p.location }} · {{ p.year }}</div>
-            <div class="text-xs text-gray-400">{{ p.createTime }}</div>
           </div>
           <div class="mt-3 flex gap-1 flex-wrap">
             <el-button v-if="p.status==='IN_PROGRESS'" size="small" @click="changeStatus(p,'COMPLETED')">完结</el-button>
@@ -50,7 +49,7 @@
           </el-select>
         </el-form-item>
         <el-alert v-if="!editing" type="info" :closable="false" show-icon class="mt-2">
-          <template #title><span class="text-xs">项目编码将自动生成（格式：HBXM-类型-年份-序号）</span></template>
+          <template #title><span class="text-xs">编码自动生成，无需手动填写</span></template>
         </el-alert>
       </el-form>
       <template #footer><el-button @click="dialogVisible = false">取消</el-button><el-button type="primary" @click="submit">保存</el-button></template>

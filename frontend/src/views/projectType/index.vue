@@ -59,7 +59,6 @@
           <el-button size="small" type="primary" @click="openCreateFtc">+ 新增</el-button>
         </div>
         <el-table :data="ftcList" border size="small">
-          <el-table-column label="#" width="40" type="index" />
           <el-table-column prop="name" label="名称" min-width="120" />
           <el-table-column prop="code" label="编码" width="120"><template #default="{ row }"><code class="text-xs">{{ row.code }}</code></template></el-table-column>
           <el-table-column label="Sheet" width="130"><template #default="{ row }"><span class="text-xs text-purple-600">{{ row.sheetName || '(第一个Sheet)' }}</span></template></el-table-column>
@@ -83,7 +82,6 @@
               <el-button size="small" type="primary" @click="openCreateField">+ 新增字段</el-button>
             </div>
             <el-table :data="fieldList" border size="small">
-              <el-table-column label="#" width="40" type="index" />
               <el-table-column prop="fieldLabel" label="名称" min-width="100" />
               <el-table-column prop="fieldKey" label="标识" width="100"><template #default="{ row }"><code class="text-xs">{{ row.fieldKey }}</code></template></el-table-column>
               <el-table-column prop="fieldType" label="类型" width="60" />

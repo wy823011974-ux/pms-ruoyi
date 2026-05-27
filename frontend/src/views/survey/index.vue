@@ -30,8 +30,7 @@
     <!-- 数据表格 -->
     <el-card>
       <el-table :data="rows" border size="small" v-loading="loading" max-height="500">
-        <el-table-column label="#" width="50" type="index" :index="(idx) => (page - 1) * 50 + idx + 1" />
-        <el-table-column prop="projectCode" label="项目编号" width="150" />
+        <el-table-column prop="projectCode" label="项目编号" width="160" />
         <el-table-column prop="projectYear" label="年份" width="70" />
         <el-table-column prop="projectLocation" label="地区" width="120" />
         <el-table-column v-for="key in dataKeys" :key="key" :prop="'rowData.' + key" :label="key" min-width="100" show-overflow-tooltip />
