@@ -196,7 +196,7 @@ public class ProjectTypeController {
                     cn.hutool.extra.pinyin.PinyinUtil.getPinyin((String) ftcMap.get("name"), "").toLowerCase().replace(" ", "_")));
             ftc.setSkipRows((Integer) ftcMap.getOrDefault("skip_rows", 0));
             ftc.setSheetName((String) ftcMap.get("sheet_name"));
-            ftc.setHasFields((Integer) ftcMap.getOrDefault("has_fields", 0));
+            ftc.setHasFields(Boolean.TRUE.equals(ftcMap.get("has_fields")) || Integer.valueOf(1).equals(ftcMap.get("has_fields")));
             ftc.setSortOrder((Integer) ftcMap.getOrDefault("sort_order", 0));
             ftcMapper.insert(ftc);
             fileTypesCreated++;

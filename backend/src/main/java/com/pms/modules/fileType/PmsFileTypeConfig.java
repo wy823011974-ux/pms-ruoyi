@@ -13,7 +13,7 @@ public class PmsFileTypeConfig {
     private String code;
     private Integer skipRows;
     private String sheetName;
-    private Integer hasFields;
+    private Boolean hasFields;
     private String uploadSchema;
     private Integer sortOrder;
     private LocalDateTime createTime;
