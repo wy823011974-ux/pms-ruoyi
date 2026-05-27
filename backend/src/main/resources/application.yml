@@ -26,12 +26,18 @@ mybatis-plus:
       logic-not-delete-value: 0
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
 
 jwt:
-  secret: pms-jwt-secret-key-2026-v2-change-in-production-to-64-char-random
+  # 生产环境请使用环境变量 ${JWT_SECRET} 或外部配置中心
+  secret: ${JWT_SECRET:pms-jwt-secret-key-2026-v2-change-in-production-to-64-char-random}
   expiration: 480
 
 pms:
   upload-path: ./uploads
   max-file-size: 52428800
+
+---
+# 生产环境配置（spring.profiles.active=prod时生效）
+# 数据库密码应通过环境变量注入：${DB_PASSWORD}
+# 敏感信息不应硬编码在配置文件中

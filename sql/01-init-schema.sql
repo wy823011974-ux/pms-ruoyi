@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS sys_audit_log (
     ip_address VARCHAR(50) COMMENT 'IP地址',
     result VARCHAR(20) NOT NULL DEFAULT 'success' COMMENT '结果',
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_user_id (user_id),
     INDEX idx_action (action)
 ) COMMENT '审计日志';
@@ -141,6 +142,7 @@ CREATE TABLE IF NOT EXISTS pms_survey_data (
     original_filename VARCHAR(500) COMMENT '原始文件名',
     upload_by BIGINT COMMENT '上传人',
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_project (project_id),
     INDEX idx_ftc (file_type_config_id),
     INDEX idx_pcode (project_code),
@@ -159,6 +161,7 @@ CREATE TABLE IF NOT EXISTS pms_upload_history (
     status VARCHAR(20) DEFAULT 'success' COMMENT '状态: success/failed',
     error_detail JSON COMMENT '错误详情',
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_project (project_id)
 ) COMMENT '上传历史';
 

@@ -12,6 +12,7 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.pms.common.BusinessException;
 import com.pms.modules.fileType.PmsFieldDefinition;
 import com.pms.modules.fileType.PmsFieldDefinitionMapper;
 import com.pms.modules.fileType.PmsFileTypeConfig;
@@ -59,20 +60,20 @@ public class SurveyService {
     public Map<String, Object> uploadData(Long projectId, Long ftcId, int skipRows,
                                            boolean overwrite, MultipartFile file) {
         PmsProject proj = projectMapper.selectById(projectId);
-        if (proj == null) throw new RuntimeException("项目不存在");
+        if (proj == null) throw new BusinessException("项目不存在");
 
         PmsFileTypeConfig ftc = ftcMapper.selectById(ftcId);
-        if (ftc == null) throw new RuntimeException("文件类型配置不存在");
+        if (ftc == null) throw new BusinessException("文件类型配置不存在");
 
         byte[] content = readFileBytes(file);
-        if (content.length > MAX_FILE_SIZE) throw new RuntimeException("文件过大(最大50MB)");
+        if (content.length > MAX_FILE_SIZE) throw new BusinessException("文件过大(最大50MB)");
 
         validateFileMagicBytes(content);
 
         // 解析Excel
         int actualSkip = skipRows > 0 ? skipRows : (ftc.getSkipRows() != null ? ftc.getSkipRows() : 0);
         List<Map<String, String>> rows = ExcelValidator.parseExcel(content, ftc.getSheetName(), actualSkip);
-        if (rows.isEmpty()) throw new RuntimeException("文件为空或无法解析");
+        if (rows.isEmpty()) throw new BusinessException("文件为空或无法解析");
 
         // 获取字段定义，用于校验和脱敏
         List<PmsFieldDefinition> fields = fdMapper.selectList(
@@ -159,7 +160,7 @@ public class SurveyService {
         qw.orderByAsc(PmsSurveyData::getId);
         List<PmsSurveyData> list = surveyDataMapper.selectList(qw);
 
-        if (list.isEmpty()) throw new RuntimeException("没有数据可导出");
+        if (list.isEmpty()) throw new BusinessException("没有数据可导出");
 
         // 从字段定义获取有序的列头（按 sort_order 排列）
         List<PmsFieldDefinition> fields = fdMapper.selectList(
@@ -229,7 +230,7 @@ public class SurveyService {
 
     private byte[] readFileBytes(MultipartFile file) {
         try { return file.getBytes(); }
-        catch (Exception e) { throw new RuntimeException("读取文件失败: " + e.getMessage()); }
+        catch (Exception e) { throw new BusinessException("读取文件失败: " + e.getMessage()); }
     }
 
     /**
@@ -244,7 +245,7 @@ public class SurveyService {
             if (content[i] != zipSig[i]) isZip = false;
             if (content[i] != oleSig[i]) isOle = false;
         }
-        if (!isZip && !isOle) throw new RuntimeException("文件格式不匹配：扩展名与文件内容不符");
+        if (!isZip && !isOle) throw new BusinessException("文件格式不匹配：扩展名与文件内容不符");
     }
 
     /**
@@ -260,7 +261,7 @@ public class SurveyService {
                     && (value == null || value.trim().isEmpty())) {
                 // 报错时告知Excel中实际有哪些列，便于排查列名不匹配问题
                 String availableCols = String.join(", ", row.keySet().stream().limit(10).toList());
-                throw new RuntimeException("字段 '" + fd.getFieldLabel() + "'（" + fd.getFieldKey() + "）是必填的，但Excel中该列为空。"
+                throw new BusinessException("字段 '" + fd.getFieldLabel() + "'（" + fd.getFieldKey() + "）是必填的，但Excel中该列为空。"
                         + "Excel前10列: [" + availableCols + "]");
             }
 
@@ -271,7 +272,7 @@ public class SurveyService {
                 case "number":
                     try { Double.parseDouble(value.trim()); }
                     catch (NumberFormatException e) {
-                        throw new RuntimeException("字段 '" + fd.getFieldLabel() + "' 应为数字，实际值: " + value);
+                        throw new BusinessException("字段 '" + fd.getFieldLabel() + "' 应为数字，实际值: " + value);
                     }
                     break;
                 case "select":

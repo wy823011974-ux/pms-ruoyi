@@ -32,6 +32,13 @@ public class GlobalExceptionHandler {
         return Result.fail(403, "无权限");
     }
 
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Result<Void> handleBusiness(BusinessException e) {
+        log.warn("Business error: {}", e.getMessage());
+        return Result.fail(e.getCode(), e.getMessage());
+    }
+
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Result<Void> handleRuntime(RuntimeException e) {
