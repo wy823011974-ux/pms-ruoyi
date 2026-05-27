@@ -21,7 +21,7 @@
           "key": "shen_fen_zheng",
           "name": "身份证",
           "type": "text",
-          "required": true,
+          "required": false,
           "sensitive": true,
           "anonymize_rule": "id_card"
         },
@@ -29,7 +29,7 @@
           "key": "xing_ming",
           "name": "姓名",
           "type": "text",
-          "required": true,
+          "required": false,
           "sensitive": true,
           "anonymize_rule": "name"
         },
