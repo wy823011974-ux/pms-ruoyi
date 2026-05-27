@@ -77,7 +77,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { listProjects, listFileTypes } from '@/api/project'
 import { uploadData, listSurveyData, deleteSurveyData, clearData, history, exportSurveyData } from '@/api/survey'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const route = useRoute()
 const pid = ref(Number(route.params.projectId))
@@ -150,14 +150,18 @@ async function handleUpload(e) {
 }
 
 async function handleClear() {
-  if (!confirm('确定清空当前类型全部数据？此操作不可恢复！')) return
   try {
+    await ElMessageBox.confirm('确定清空当前类型全部数据？此操作不可恢复！', '警告', {
+      type: 'warning',
+      confirmButtonText: '确定清空',
+      cancelButtonText: '取消'
+    })
     await clearData(pid.value, uploadFtcId.value)
     ElMessage.success('已清空')
     rows.value = []
     total.value = 0
     loadHistory()
-  } catch { ElMessage.error('清空失败') }
+  } catch { /* 用户取消 */ }
 }
 
 async function handleExport() {

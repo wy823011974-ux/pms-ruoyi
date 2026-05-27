@@ -31,7 +31,7 @@
             <el-button size="small" @click="$router.push('/files/'+p.id)">文件</el-button>
             <el-button size="small" type="success" @click="$router.push('/survey/'+p.id)">数据</el-button>
             <el-button size="small" @click="openEdit(p)">编辑</el-button>
-            <el-popconfirm title="软删除?" @confirm="doDelete(p)"><template #reference><el-button size="small" type="danger">删除</el-button></template></el-popconfirm>
+            <el-popconfirm title="确定删除项目？" @confirm="doDelete(p)"><template #reference><el-button size="small" type="danger">删除</el-button></template></el-popconfirm>
           </div>
         </el-card>
       </el-col>
