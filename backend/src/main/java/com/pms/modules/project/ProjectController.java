@@ -4,6 +4,10 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pms.common.Result;
+import com.pms.modules.file.PmsFileRecord;
+import com.pms.modules.file.PmsFileRecordMapper;
+import com.pms.modules.survey.PmsSurveyData;
+import com.pms.modules.survey.PmsSurveyDataMapper;
 import com.pms.modules.user.SysUser;
 import com.pms.modules.user.SysUserMapper;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +23,22 @@ public class ProjectController {
 
     private final PmsProjectMapper projectMapper;
     private final SysUserMapper userMapper;
+    private final PmsSurveyDataMapper surveyDataMapper;
+    private final PmsFileRecordMapper fileRecordMapper;
     private final ProjectService projectService;
 
     @GetMapping
     public Result<Map<String, Object>> list(
             @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int pageSize,
-            @RequestParam(required = false) String status, @RequestParam(required = false) String keyword) {
+            @RequestParam(required = false) String status, @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "false") boolean deleted) {
         LambdaQueryWrapper<PmsProject> qw = new LambdaQueryWrapper<>();
-        qw.eq(PmsProject::getIsDeleted, 0);
+        // 默认不显示已删除项目
+        if (!deleted) {
+            qw.eq(PmsProject::getIsDeleted, 0);
+        } else {
+            qw.eq(PmsProject::getIsDeleted, 1);
+        }
         if (StrUtil.isNotBlank(status)) qw.eq(PmsProject::getStatus, status);
         if (StrUtil.isNotBlank(keyword))
             qw.and(w -> w.like(PmsProject::getName, keyword).or().like(PmsProject::getCode, keyword));
@@ -67,6 +79,16 @@ public class ProjectController {
     public Result<Void> delete(@PathVariable Long id) {
         PmsProject p = projectMapper.selectById(id);
         if (p == null) return Result.fail("项目不存在");
+
+        // 检查是否有已上传的数据或文件
+        long dataCount = surveyDataMapper.selectCount(
+                new LambdaQueryWrapper<PmsSurveyData>().eq(PmsSurveyData::getProjectId, id));
+        long fileCount = fileRecordMapper.selectCount(
+                new LambdaQueryWrapper<PmsFileRecord>().eq(PmsFileRecord::getProjectId, id));
+        if (dataCount > 0 || fileCount > 0) {
+            return Result.fail("该项目已有 " + dataCount + " 条数据和 " + fileCount + " 个文件，请先清空后再删除");
+        }
+
         p.setIsDeleted(1);
         projectMapper.updateById(p);
         return Result.ok();
