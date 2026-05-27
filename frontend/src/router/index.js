@@ -28,9 +28,15 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   document.title = to.meta.title ? to.meta.title + ' - PMS' : '项目管理系统'
   const store = useUserStore()
+
+  // 刷新页面时恢复登录状态（token存在但userInfo丢失）
+  if (store.token && !store.userInfo) {
+    await store.restoreSession()
+  }
+
   if (to.name !== 'Login' && !store.token) {
     next({ name: 'Login' })
   } else if (to.name === 'Login' && store.token) {

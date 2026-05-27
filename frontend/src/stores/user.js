@@ -23,11 +23,18 @@ export const useUserStore = defineStore('user', () => {
     } catch { logout() }
   }
 
+  // 刷新页面时恢复登录状态
+  async function restoreSession() {
+    if (token.value && !userInfo.value) {
+      await fetchUserInfo()
+    }
+  }
+
   function logout() {
     token.value = ''
     userInfo.value = null
     localStorage.removeItem('pms_token')
   }
 
-  return { token, userInfo, isAdmin, doLogin, fetchUserInfo, logout }
+  return { token, userInfo, isAdmin, doLogin, fetchUserInfo, restoreSession, logout }
 })
