@@ -149,5 +149,5 @@ onMounted(() => { load(); loadTypes() })
 
 <style scoped>
 .project-card.deleted { opacity: 0.6; }
-.project-card.deleted :deep(.el-card__header) { background: #fef0f0; }
+.project-card.deleted :deep(.el-card__header) { background: #FEF2F2; }
 </style>

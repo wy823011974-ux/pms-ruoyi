@@ -208,6 +208,6 @@ onMounted(loadUsers)
 
 <style scoped>
 .user-table { font-size: 13px; }
-.action-btn { border: none; color: #909399; padding: 4px 6px; }
-.action-btn:hover { color: #409eff; background: #ecf5ff; }
+.action-btn { border: none; color: var(--color-text-muted); padding: 4px 6px; }
+.action-btn:hover { color: var(--color-primary); background: var(--color-primary-light); }
 </style>
