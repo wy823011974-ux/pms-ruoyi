@@ -146,7 +146,10 @@ async function handleUpload(e) {
     e.target.value = ''
     loadData()
     loadHistory()
-  } catch { ElMessage.error('上传失败，请检查文件格式') }
+  } catch (err) {
+    const msg = err?.response?.data?.msg || err?.message || '上传失败'
+    ElMessage.error(msg)
+  }
 }
 
 async function handleClear() {

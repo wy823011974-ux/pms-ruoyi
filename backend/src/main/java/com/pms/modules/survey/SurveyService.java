@@ -224,7 +224,10 @@ public class SurveyService {
             // 必填校验
             if (fd.getIsRequired() != null && fd.getIsRequired() == 1
                     && (value == null || value.trim().isEmpty())) {
-                throw new RuntimeException("字段 '" + fd.getFieldLabel() + "' 是必填的");
+                // 报错时告知Excel中实际有哪些列，便于排查列名不匹配问题
+                String availableCols = String.join(", ", row.keySet().stream().limit(10).toList());
+                throw new RuntimeException("字段 '" + fd.getFieldLabel() + "'（" + fd.getFieldKey() + "）是必填的，但Excel中该列为空。"
+                        + "Excel前10列: [" + availableCols + "]");
             }
 
             if (value == null || value.trim().isEmpty()) continue;
