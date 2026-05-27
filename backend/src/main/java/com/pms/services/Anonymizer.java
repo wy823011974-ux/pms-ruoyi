@@ -1,6 +1,9 @@
 package com.pms.services;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
+import com.pms.modules.fileType.PmsFieldDefinition;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -17,6 +20,30 @@ public class Anonymizer {
         RULES.put("id_card", Anonymizer::maskIdCard);
         RULES.put("phone", Anonymizer::maskPhone);
         RULES.put("address", Anonymizer::maskAddress);
+    }
+
+    /**
+     * 根据字段定义脱敏 —— 通过 field_label（中文列名）匹配 + extra_attrs 中的 anonymize_rule 确定脱敏规则
+     */
+    public static Map<String, String> anonymize(Map<String, String> row, List<PmsFieldDefinition> fields) {
+        Map<String, String> result = new HashMap<>(row);
+        for (PmsFieldDefinition fd : fields) {
+            if (fd.getExtraAttrs() == null) continue;
+            try {
+                Map<String, Object> attrs = JSONUtil.parseObj(fd.getExtraAttrs());
+                if (Boolean.TRUE.equals(attrs.get("sensitive"))) {
+                    String rule = (String) attrs.getOrDefault("anonymize_rule", "name");
+                    // 用中文列名匹配
+                    String key = fd.getFieldLabel();
+                    String val = result.get(key);
+                    if (val == null) val = result.get(fd.getFieldKey());
+                    if (StrUtil.isNotBlank(val) && RULES.containsKey(rule)) {
+                        result.put(key, RULES.get(rule).apply(val));
+                    }
+                }
+            } catch (Exception ignored) {}
+        }
+        return result;
     }
 
     public static Map<String, String> anonymize(Map<String, String> row) {

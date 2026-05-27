@@ -92,8 +92,8 @@ public class SurveyService {
         for (Map<String, String> row : rows) {
             // 校验行数据
             validateRow(row, fields);
-            // 脱敏处理
-            Map<String, String> masked = Anonymizer.anonymize(row);
+            // 脱敏处理（根据字段定义匹配脱敏规则）
+            Map<String, String> masked = Anonymizer.anonymize(row, fields);
             // 入库
             PmsSurveyData sd = new PmsSurveyData();
             sd.setProjectId(projectId);
@@ -145,7 +145,7 @@ public class SurveyService {
     }
 
     /**
-     * 导出调查数据为 Excel 字节流
+     * 导出调查数据为 Excel 字节流（按字段定义的 sort_order 排序）
      */
     public byte[] exportData(Long projectId, Long fileTypeConfigId) {
         LambdaQueryWrapper<PmsSurveyData> qw = new LambdaQueryWrapper<>();
@@ -156,9 +156,21 @@ public class SurveyService {
 
         if (list.isEmpty()) throw new RuntimeException("没有数据可导出");
 
-        // 从第一条数据推断表头
-        Map<String, Object> firstRow = JSONUtil.parseObj(list.get(0).getRowData());
-        List<String> headers = new ArrayList<>(firstRow.keySet());
+        // 从字段定义获取有序的列头（按 sort_order 排列）
+        List<PmsFieldDefinition> fields = fdMapper.selectList(
+                new LambdaQueryWrapper<PmsFieldDefinition>()
+                        .eq(PmsFieldDefinition::getFileTypeConfigId, fileTypeConfigId)
+                        .eq(PmsFieldDefinition::getIsActive, 1)
+                        .orderByAsc(PmsFieldDefinition::getSortOrder));
+
+        List<String> headers;
+        if (!fields.isEmpty()) {
+            headers = fields.stream().map(PmsFieldDefinition::getFieldLabel).collect(Collectors.toList());
+        } else {
+            // 兜底：从第一条数据推断
+            Map<String, Object> firstRow = JSONUtil.parseObj(list.get(0).getRowData());
+            headers = new ArrayList<>(firstRow.keySet());
+        }
 
         // 构建导出数据
         List<List<String>> exportRows = new ArrayList<>();
