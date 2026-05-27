@@ -2,9 +2,14 @@ package com.pms.modules.survey;
 
 import com.pms.common.Result;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -70,17 +75,18 @@ public class SurveyController {
     }
 
     /**
-     * 导出调查数据为 Excel（返回下载URL或文件流）
+     * 导出调查数据为 Excel 文件下载
      */
     @GetMapping("/projects/{projectId}/survey-data/export")
-    public Result<byte[]> export(@PathVariable Long projectId,
+    public ResponseEntity<byte[]> export(@PathVariable Long projectId,
             @RequestParam(required = false) Long fileTypeConfigId) {
-        try {
-            byte[] data = surveyService.exportData(projectId, fileTypeConfigId);
-            return Result.ok(data);
-        } catch (Exception e) {
-            return Result.fail("导出失败: " + e.getMessage());
-        }
+        byte[] data = surveyService.exportData(projectId, fileTypeConfigId);
+        String filename = "survey_data_" + projectId + "_" + java.time.LocalDate.now() + ".xlsx";
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + URLEncoder.encode(filename, StandardCharsets.UTF_8) + "\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(data);
     }
 
     /**
