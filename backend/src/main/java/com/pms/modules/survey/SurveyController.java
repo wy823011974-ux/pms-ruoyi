@@ -37,7 +37,7 @@ public class SurveyController {
     public Result<Map<String, Object>> upload(@PathVariable Long projectId,
             @RequestParam("file") MultipartFile file,
             @RequestParam("file_type_config_id") Long ftcId,
-            @RequestParam(defaultValue = "0") int skipRows,
+            @RequestParam(name = "skip_rows", defaultValue = "0") int skipRows,
             @RequestParam(defaultValue = "true") boolean overwrite) {
         try {
             Map<String, Object> result = surveyService.uploadData(projectId, ftcId, skipRows, overwrite, file);

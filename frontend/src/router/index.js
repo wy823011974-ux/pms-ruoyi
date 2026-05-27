@@ -41,6 +41,9 @@ router.beforeEach(async (to, from, next) => {
     next({ name: 'Login' })
   } else if (to.name === 'Login' && store.token) {
     next({ path: '/dashboard' })
+  } else if (to.meta.roles && store.userInfo && !to.meta.roles.includes(store.userInfo.role)) {
+    // 角色不足，跳回仪表盘
+    next({ path: '/dashboard' })
   } else {
     next()
   }

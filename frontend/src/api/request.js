@@ -20,7 +20,7 @@ request.interceptors.response.use(
     }
     const res = response.data
     if (res.code === 200) return res
-    if (res.code === 401) { localStorage.removeItem('pms_token'); window.location.href = '/login' }
+    if (res.code === 401) { localStorage.removeItem('pms_token'); window.location.href = '/login'; return Promise.reject(new Error('未登录')); }
     ElMessage.error(res.msg || '请求失败')
     return Promise.reject(new Error(res.msg || '请求失败'))
   },

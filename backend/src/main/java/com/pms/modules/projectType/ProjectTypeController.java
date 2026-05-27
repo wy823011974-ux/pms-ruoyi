@@ -17,6 +17,7 @@ import com.pms.modules.fileType.PmsFieldDefinition;
 import com.pms.modules.fileType.PmsFieldDefinitionMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,6 +53,7 @@ public class ProjectTypeController {
     }
 
     @DeleteMapping("/{id}")
+    @Transactional
     public Result<Void> delete(@PathVariable Long id) {
         // cascade: delete FTCs -> fields
         List<PmsFileTypeConfig> ftcs = ftcMapper.selectList(new LambdaQueryWrapper<PmsFileTypeConfig>().eq(PmsFileTypeConfig::getProjectTypeId, id));

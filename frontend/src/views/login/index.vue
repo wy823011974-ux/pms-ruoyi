@@ -73,7 +73,11 @@ const registerRules = {
 async function handleLogin() {
   loading.value = true
   try { await store.doLogin(loginForm.phone, loginForm.password); router.push('/dashboard') }
-  catch {} finally { loading.value = false }
+  catch (e) {
+    // 错误已由请求拦截器统一显示，此处仅处理未预期的异常
+    if (e && e.message && e.message !== '请求失败') ElMessage.error(e.message)
+  }
+  finally { loading.value = false }
 }
 
 async function handleRegister() {
@@ -82,7 +86,10 @@ async function handleRegister() {
     await register({ phone: registerForm.phone, password: registerForm.password, email: registerForm.email, displayName: registerForm.displayName, department: registerForm.department })
     ElMessage.success('注册成功，等待管理员审批')
     showRegister.value = false
-  } catch {} finally { loading.value = false }
+  } catch (e) {
+    if (e && e.message && e.message !== '请求失败') ElMessage.error(e.message)
+  }
+  finally { loading.value = false }
 }
 </script>
 

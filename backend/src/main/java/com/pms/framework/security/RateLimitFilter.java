@@ -45,17 +45,15 @@ public class RateLimitFilter implements Filter {
         }
 
         String ip = getClientIp(req);
-        Integer count = counter.getIfPresent(ip);
-        if (count == null) {
-            counter.put(ip, 1);
-        } else if (count >= MAX_REQUESTS_PER_MINUTE) {
+        // 使用原子操作避免并发竞态
+        int count = counter.asMap().compute(ip, (k, v) -> v == null ? 1 : v + 1);
+        if (count > MAX_REQUESTS_PER_MINUTE) {
             res.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
             res.setContentType("application/json;charset=UTF-8");
             res.getWriter().write("{\"code\":429,\"msg\":\"请求过于频繁，请稍后再试\"}");
+            res.getWriter().flush();
             log.warn("速率限制触发：IP={}, 请求数={}", ip, count);
             return;
-        } else {
-            counter.put(ip, count + 1);
         }
 
         chain.doFilter(request, response);

@@ -63,8 +63,11 @@ public class ProjectController {
         // 自动生成项目编码：HBXM-{类型简写}-{年份}-{序号}
         p.setCode(projectService.generateProjectCode(p.getProjectTypeId(), p.getYear()));
         p.setStatus("IN_PROGRESS");
-        // TODO: 从认证上下文获取当前用户ID
-        p.setCreatorId(1L);
+        // 从认证上下文获取当前用户ID
+        org.springframework.security.core.Authentication auth =
+                org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        Long currentUserId = (auth != null && auth.getPrincipal() instanceof Long) ? (Long) auth.getPrincipal() : 1L;
+        p.setCreatorId(currentUserId);
         projectMapper.insert(p);
         return Result.ok(toVO(p));
     }
@@ -119,7 +122,7 @@ public class ProjectController {
         m.put("projectTypeId",p.getProjectTypeId()); m.put("status",p.getStatus());
         m.put("leaderId",p.getLeaderId()); m.put("creatorId",p.getCreatorId());
         m.put("startDate",p.getStartDate()); m.put("endDate",p.getEndDate());
-        m.put("createTime",p.getCreateTime());
+        m.put("createTime",p.getCreateTime()); m.put("isDeleted",p.getIsDeleted());
         return m;
     }
 

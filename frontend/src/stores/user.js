@@ -20,7 +20,10 @@ export const useUserStore = defineStore('user', () => {
     try {
       const res = await getUserInfo()
       userInfo.value = res.data
-    } catch { logout() }
+    } catch {
+      // 仅网络/服务端临时故障，不清除登录态
+      // 真正的401已由请求拦截器统一处理
+    }
   }
 
   // 刷新页面时恢复登录状态

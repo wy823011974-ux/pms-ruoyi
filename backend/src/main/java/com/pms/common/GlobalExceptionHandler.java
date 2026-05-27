@@ -40,10 +40,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<Void> handleRuntime(RuntimeException e) {
-        log.error("Runtime error: {}", e.getMessage());
-        return Result.fail(e.getMessage());
+        log.error("Runtime error", e);
+        return Result.fail("服务器内部错误");
     }
 
     @ExceptionHandler(Exception.class)
