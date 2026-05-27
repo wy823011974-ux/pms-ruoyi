@@ -14,6 +14,10 @@ request.interceptors.request.use(config => {
 
 request.interceptors.response.use(
   response => {
+    // blob 类型响应直接透传（如 Excel 导出）
+    if (response.config.responseType === 'blob' || response.data instanceof Blob) {
+      return response
+    }
     const res = response.data
     if (res.code === 200) return res
     if (res.code === 401) { localStorage.removeItem('pms_token'); window.location.href = '/login' }

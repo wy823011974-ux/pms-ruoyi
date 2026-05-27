@@ -30,7 +30,8 @@ export const exportSurveyData = async (pid, ftcId) => {
     params: { fileTypeConfigId: ftcId },
     responseType: 'blob'
   })
-  return response.data || response
+  // 拦截器对blob类型透传axios response，取data即为Blob
+  return response.data
 }
 
 /** 查询上传历史 */
