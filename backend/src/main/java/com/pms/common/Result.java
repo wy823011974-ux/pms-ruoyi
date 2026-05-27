@@ -1,5 +1,10 @@
 package com.pms.common;
 
+/**
+ * @author ROY
+ * @date 2026/05/27
+ */
+
 import lombok.Data;
 import java.util.Map;
 

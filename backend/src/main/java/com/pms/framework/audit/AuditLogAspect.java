@@ -1,5 +1,10 @@
 package com.pms.framework.audit;
 
+/**
+ * @author ROY
+ * @date 2026/05/27
+ */
+
 import cn.hutool.json.JSONUtil;
 import com.pms.modules.audit.SysAuditLog;
 import com.pms.modules.audit.SysAuditLogMapper;
@@ -59,7 +64,9 @@ public class AuditLogAspect {
                     && !(paramValues[i] instanceof jakarta.servlet.http.HttpServletResponse)) {
                 try {
                     params.put(paramNames[i], paramValues[i].toString());
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                    // 参数序列化失败不影响审计日志记录
+                }
             }
         }
         auditLog.setDetail(JSONUtil.toJsonStr(params));

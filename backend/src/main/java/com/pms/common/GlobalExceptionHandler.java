@@ -1,5 +1,10 @@
 package com.pms.common;
 
+/**
+ * @author ROY
+ * @date 2026/05/27
+ */
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;

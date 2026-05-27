@@ -1,5 +1,10 @@
 package com.pms.services;
 
+/**
+ * @author ROY
+ * @date 2026/05/27
+ */
+
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.pms.modules.fileType.PmsFieldDefinition;
@@ -41,7 +46,9 @@ public class Anonymizer {
                         result.put(key, RULES.get(rule).apply(val));
                     }
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+                // extra_attrs JSON解析失败时跳过该字段脱敏，不影响整体流程
+            }
         }
         return result;
     }

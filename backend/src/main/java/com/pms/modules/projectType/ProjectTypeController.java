@@ -1,5 +1,10 @@
 package com.pms.modules.projectType;
 
+/**
+ * @author ROY
+ * @date 2026/05/27
+ */
+
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -151,7 +156,9 @@ public class ProjectTypeController {
                     try {
                         Map<String, Object> attrs = JSONUtil.parseObj(fd.getExtraAttrs());
                         col.putAll(attrs);
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                        // extra_attrs JSON解析失败时跳过该属性
+                    }
                 }
                 columns.add(col);
             }

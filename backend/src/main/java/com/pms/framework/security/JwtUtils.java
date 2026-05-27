@@ -1,5 +1,10 @@
 package com.pms.framework.security;
 
+/**
+ * @author ROY
+ * @date 2026/05/27
+ */
+
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;

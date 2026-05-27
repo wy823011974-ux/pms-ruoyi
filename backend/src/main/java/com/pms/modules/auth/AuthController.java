@@ -1,5 +1,10 @@
 package com.pms.modules.auth;
 
+/**
+ * @author ROY
+ * @date 2026/05/27
+ */
+
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.pms.common.Result;

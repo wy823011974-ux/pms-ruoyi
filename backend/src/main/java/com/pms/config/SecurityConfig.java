@@ -1,5 +1,10 @@
 package com.pms.config;
 
+/**
+ * @author ROY
+ * @date 2026/05/27
+ */
+
 import com.pms.framework.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
