@@ -9,10 +9,10 @@
 
       <el-form v-if="!showRegister" ref="loginFormRef" :model="loginForm" :rules="loginRules" @submit.prevent="handleLogin">
         <el-form-item prop="phone">
-          <el-input v-model="loginForm.phone" placeholder="手机号" size="large" class="apple-input" />
+          <el-input v-model="loginForm.phone" placeholder="手机号" size="large" />
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-model="loginForm.password" type="password" placeholder="密码" size="large" show-password class="apple-input" @keyup.enter="handleLogin" />
+          <el-input v-model="loginForm.password" type="password" placeholder="密码" size="large" show-password @keyup.enter="handleLogin" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" size="large" :loading="loading" class="login-btn" @click="handleLogin">登 录</el-button>
@@ -20,11 +20,11 @@
       </el-form>
 
       <el-form v-else ref="registerFormRef" :model="registerForm" :rules="registerRules" @submit.prevent="handleRegister">
-        <el-form-item prop="phone"><el-input v-model="registerForm.phone" placeholder="手机号" size="large" class="apple-input" /></el-form-item>
-        <el-form-item prop="displayName"><el-input v-model="registerForm.displayName" placeholder="姓名" size="large" class="apple-input" /></el-form-item>
-        <el-form-item prop="department"><el-input v-model="registerForm.department" placeholder="部门/单位" size="large" class="apple-input" /></el-form-item>
-        <el-form-item prop="email"><el-input v-model="registerForm.email" placeholder="邮箱" size="large" class="apple-input" /></el-form-item>
-        <el-form-item prop="password"><el-input v-model="registerForm.password" type="password" placeholder="密码（至少8位）" size="large" show-password class="apple-input" /></el-form-item>
+        <el-form-item prop="phone"><el-input v-model="registerForm.phone" placeholder="手机号" size="large" /></el-form-item>
+        <el-form-item prop="displayName"><el-input v-model="registerForm.displayName" placeholder="姓名" size="large" /></el-form-item>
+        <el-form-item prop="department"><el-input v-model="registerForm.department" placeholder="部门/单位" size="large" /></el-form-item>
+        <el-form-item prop="email"><el-input v-model="registerForm.email" placeholder="邮箱" size="large" /></el-form-item>
+        <el-form-item prop="password"><el-input v-model="registerForm.password" type="password" placeholder="密码（至少8位）" size="large" show-password /></el-form-item>
         <el-form-item>
           <el-button type="primary" size="large" :loading="loading" class="login-btn" @click="handleRegister">注 册</el-button>
         </el-form-item>
@@ -96,7 +96,6 @@ async function handleRegister() {
 }
 .login-header h2 { font-size: 24px; font-weight: 700; color: var(--apple-text); margin: 0 0 4px; letter-spacing: -0.3px; }
 .login-subtitle { font-size: 14px; color: var(--apple-text-secondary); margin: 0; }
-.login-btn { width: 100%; height: 48px; font-size: 17px; font-weight: 600; border-radius: 12px; letter-spacing: 4px; }
-.login-footer { text-align: center; margin-top: 20px; font-size: 14px; }
+.login-btn { width: 100%; height: 48px; font-size: 17px; font-weight: 600; letter-spacing: 4px; }
 .text-secondary { color: var(--apple-text-secondary); }
 </style>

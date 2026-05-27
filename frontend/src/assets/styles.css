@@ -41,7 +41,7 @@
   --el-color-danger: #FF3B30;
   --el-color-info: #5AC8FA;
   --el-font-family: var(--apple-font);
-  --el-border-radius-base: 12px;
+  --el-border-radius-base: 24px;
   --el-border-color: var(--apple-separator);
   --el-bg-color: var(--apple-surface);
   --el-text-color-primary: var(--apple-text);
@@ -96,11 +96,11 @@ body {
 .el-table td.el-table__cell { padding: 12px 0 12px 12px; }
 .el-table__body tr:hover > td { background: var(--apple-fill-quaternary) !important; }
 
-/* 按钮 — 圆角胶囊 */
+/* 按钮 — 胶囊形 */
 .el-button {
-  font-weight: 500; font-size: 15px; border-radius: 12px;
+  font-weight: 500; font-size: 15px; border-radius: 24px;
   transition: all 200ms cubic-bezier(0.25, 0.1, 0.25, 1.0);
-  letter-spacing: 0; border: none;
+  letter-spacing: 0; border: none; padding: 8px 20px;
 }
 .el-button--default {
   background: var(--apple-fill); color: var(--apple-text);
@@ -110,7 +110,8 @@ body {
   background: var(--apple-blue); box-shadow: 0 2px 8px rgba(0,122,255,0.3);
 }
 .el-button--primary:hover { background: var(--apple-blue-hover); transform: translateY(-1px); }
-.el-button--small { font-size: 13px; border-radius: 10px; padding: 5px 12px; }
+.el-button--large { border-radius: 28px; padding: 12px 28px; font-size: 17px; }
+.el-button--small { font-size: 13px; border-radius: 20px; padding: 5px 14px; }
 .el-button--danger { background: transparent; color: var(--apple-red); }
 .el-button--danger:hover { background: rgba(255,59,48,0.08); }
 .el-button--success { background: transparent; color: var(--apple-green); }
@@ -124,15 +125,25 @@ body {
 .el-dialog__header { padding: 24px 24px 8px; font-weight: 700; font-size: 17px; }
 .el-dialog__body { padding: 16px 24px; }
 
-/* 输入框 */
+/* 输入框 — 椭圆形胶囊风格 */
 .el-input__inner {
-  border-radius: 12px; border: none; background: var(--apple-fill-tertiary);
-  font-size: 15px; padding: 10px 14px; color: var(--apple-text);
+  border-radius: 24px; border: none; background: var(--apple-fill-tertiary);
+  font-size: 15px; padding: 10px 16px; color: var(--apple-text);
   transition: background 200ms ease, box-shadow 200ms ease;
 }
+.el-input--large .el-input__inner { border-radius: 26px; padding: 12px 18px; font-size: 17px; }
+.el-input--small .el-input__inner { border-radius: 20px; padding: 6px 12px; font-size: 13px; }
 .el-input__inner:focus { background: var(--apple-surface); box-shadow: 0 0 0 3px rgba(0,122,255,0.2); }
 .el-input__inner::placeholder { color: var(--apple-text-tertiary); }
-.el-select .el-input__inner { background: var(--apple-fill-tertiary); }
+
+/* 数字输入框 — 同样椭圆 */
+.el-input-number .el-input__inner { border-radius: 24px; }
+.el-input-number--large .el-input__inner { border-radius: 26px; }
+.el-input-number--small .el-input__inner { border-radius: 20px; }
+.el-input-number__decrease, .el-input-number__increase { border-radius: 24px; background: transparent; }
+
+/* 下拉选择框 — 同样椭圆 */
+.el-select .el-input__inner { background: var(--apple-fill-tertiary); border-radius: 24px; }
 
 /* 分页 */
 .el-pagination { justify-content: center; padding: 12px 0; }
