@@ -75,13 +75,14 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { listProjects, listFileTypes } from '@/api/project'
+import { listProjects, listFileTypes, listFields } from '@/api/project'
 import { uploadData, listSurveyData, deleteSurveyData, clearData, history, exportSurveyData } from '@/api/survey'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const route = useRoute()
 const pid = ref(Number(route.params.projectId))
 const fileTypes = ref([])
+const fieldOrder = ref([]) // 字段定义顺序，用于排序列
 const uploadFtcId = ref(null)
 const uploadSkipRows = ref(0)
 const uploadAsNew = ref(false)
@@ -91,12 +92,22 @@ const loading = ref(false)
 const page = ref(1)
 const histories = ref([])
 
+// 使用字段定义的 sort_order 排序，确保列顺序一致
 const dataKeys = computed(() => {
   if (!rows.value.length) return []
   const keys = new Set()
   rows.value.forEach(r => {
     if (r.rowData) Object.keys(r.rowData).forEach(k => keys.add(k))
   })
+  // 优先按字段定义顺序排列
+  if (fieldOrder.value.length) {
+    const ordered = fieldOrder.value.filter(k => keys.has(k))
+    // 不在字段定义中的放在最后
+    for (const k of keys) {
+      if (!ordered.includes(k)) ordered.push(k)
+    }
+    return ordered
+  }
   return [...keys]
 })
 
@@ -110,6 +121,22 @@ async function loadFtc() {
       fileTypes.value = (r2.data || []).filter(f => f.hasFields)
     }
   } catch { /* ignore */ }
+}
+
+async function loadFields(ftcId) {
+  if (!ftcId) { fieldOrder.value = []; return }
+  try {
+    // 从 fileTypes 中找到对应的 FTC 所属的 projectTypeId
+    const ftc = fileTypes.value.find(f => f.id === ftcId)
+    if (!ftc) return
+    // 需要知道 typeId，从路由或已加载的数据获取
+    const r = await listProjects()
+    const projs = r.data?.rows || []
+    const p = projs.find(x => x.id === pid.value)
+    if (!p) return
+    const fields = await listFields(p.projectTypeId, ftcId)
+    fieldOrder.value = (fields.data || []).filter(f => f.isActive).map(f => f.fieldLabel)
+  } catch { fieldOrder.value = [] }
 }
 
 async function loadData() {
@@ -132,8 +159,9 @@ async function loadHistory() {
 function onFtcChange(val) {
   const ft = fileTypes.value.find(f => f.id === val)
   if (ft) uploadSkipRows.value = ft.skipRows || 0
-  if (!val) { rows.value = []; total.value = 0; histories.value = []; return }
+  if (!val) { rows.value = []; total.value = 0; histories.value = []; fieldOrder.value = []; return }
   page.value = 1
+  loadFields(val)
   loadData()
   loadHistory()
 }
