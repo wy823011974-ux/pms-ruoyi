@@ -45,7 +45,9 @@ public class ExcelValidator {
 
             @Override public void doAfterAllAnalysed(AnalysisContext context) {}
             @Override public void onException(Exception e, AnalysisContext context) { throw new RuntimeException(e); }
-        }).sheet(sheetName).doRead();
+        }).sheet(sheetName)
+          .headRowNumber(0)  // 禁用EasyExcel自动表头处理，由我们手动管理表头/数据行
+          .doRead();
 
         return rows;
     }
