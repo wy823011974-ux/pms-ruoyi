@@ -160,5 +160,5 @@ CREATE TABLE IF NOT EXISTS pms_upload_history (
 
 -- 插入默认超级管理员 (密码: admin123)
 INSERT INTO sys_user (username, email, password, display_name, phone, department, role, status)
-VALUES ('admin', 'admin@pms.local', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5Eh', '系统管理员', '13800000000', '技术部', 'super_admin', 1)
+VALUES ('admin', 'admin@pms.local', '$2b$10$TMSM1YpVj2C8XrBfaLJQF.C5isMlwxA62vXHtseAUhTZxAnRewxrS', '系统管理员', '13800000000', '技术部', 'super_admin', 1)
 ON DUPLICATE KEY UPDATE username=username;
