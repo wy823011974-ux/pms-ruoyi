@@ -65,3 +65,13 @@ __pycache__/
 *.tmp
 *.bak
 *.orig
+*.pdf
+*.png
+*.jpg
+*.jpeg
+file_type_json/
+testdata/
+visual-regression/
+.playwright-mcp/
+vision.js
+vision.env

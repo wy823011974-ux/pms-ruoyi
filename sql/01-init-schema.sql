@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS sys_user (
 -- 审计日志表
 CREATE TABLE IF NOT EXISTS sys_audit_log (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id BIGINT NOT NULL COMMENT '操作用户ID',
+    user_id BIGINT NULL COMMENT '操作用户ID(登录失败时为NULL)',
     action VARCHAR(50) NOT NULL COMMENT '操作类型',
     target_type VARCHAR(50) NOT NULL COMMENT '目标类型',
     target_id BIGINT COMMENT '目标ID',

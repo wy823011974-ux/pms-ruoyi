@@ -1,1 +1,54 @@
-Docker
+# === IDE ===
+.idea/
+.vscode/
+*.iml
+
+# === Node ===
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# === Java/Maven ===
+backend/target/
+backend/*.class
+backend/*.jar
+
+# === Git ===
+.git/
+.gitignore
+
+# === 临时文件 ===
+*.tmp
+*.bak
+*.log
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+file_type_json/
+testdata/
+visual-regression/
+.playwright-mcp/
+.superpowers/
+.claude/
+.planning/
+docs/
+design-system/
+SYSTEM-DOCUMENTATION.md
+CLAUDE.md
+CONTEXT.md
+README.md
+vision.js
+vision.env
+
+# === 环境变量 ===
+.env
+.env.*
+*.pem
+*.key
+
+# === OS ===
+.DS_Store
+Thumbs.db
