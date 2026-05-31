@@ -23,6 +23,9 @@ public class FieldExcelRow {
     @ExcelProperty("是否启用(是/否)")
     private String isActive;
 
+    @ExcelProperty("选项(select类型，逗号分隔)")
+    private String options;
+
     @ExcelProperty("排序")
     private Integer sortOrder;
 }

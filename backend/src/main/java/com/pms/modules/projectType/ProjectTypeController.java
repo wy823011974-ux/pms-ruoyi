@@ -149,6 +149,13 @@ public class ProjectTypeController {
             row.setFieldType(fd.getFieldType());
             row.setIsRequired(fd.getIsRequired() == 1 ? "是" : "否");
             row.setIsActive(fd.getIsActive() == 1 ? "是" : "否");
+            // options JSON数组 → 逗号分隔字符串
+            if (fd.getOptions() != null) {
+                try {
+                    List<String> opts = JSONUtil.toList(fd.getOptions(), String.class);
+                    row.setOptions(String.join(",", opts));
+                } catch (Exception ignored) {}
+            }
             row.setSortOrder(fd.getSortOrder());
             rows.add(row);
         }
@@ -196,6 +203,12 @@ public class ProjectTypeController {
             fd.setFieldType(StrUtil.isBlank(row.getFieldType()) ? "text" : row.getFieldType().trim());
             fd.setIsRequired("是".equals(row.getIsRequired()) ? 1 : 0);
             fd.setIsActive("是".equals(row.getIsActive()) ? 1 : 0);
+            // 逗号分隔字符串 → options JSON数组
+            if (StrUtil.isNotBlank(row.getOptions())) {
+                List<String> opts = Arrays.stream(row.getOptions().trim().split(","))
+                        .map(String::trim).filter(s -> !s.isEmpty()).collect(Collectors.toList());
+                if (!opts.isEmpty()) fd.setOptions(JSONUtil.toJsonStr(opts));
+            }
             fd.setSortOrder(row.getSortOrder() != null ? row.getSortOrder() : i + 1);
             fdMapper.insert(fd);
             created++;
