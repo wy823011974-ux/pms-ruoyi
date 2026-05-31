@@ -157,7 +157,7 @@ function triggerImport() { fileInput.value?.click() }
 async function handleDownloadTemplate() {
   try {
     const res = await downloadFieldTemplate(currentType.value.id, currentFtc.value.id)
-    const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+    const blob = res.data instanceof Blob ? res.data : new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a'); a.href = url; a.download = `${currentFtc.value.name}_字段模板.xlsx`
     a.click(); URL.revokeObjectURL(url); ElMessage.success('已下载')
