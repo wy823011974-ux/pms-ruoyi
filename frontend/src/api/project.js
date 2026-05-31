@@ -21,3 +21,13 @@ export const deleteField = (typeId, cfgId, fId) => del(`/project-types/${typeId}
 /** Schema 导入导出 */
 export const exportSchema = (typeId) => get(`/project-types/${typeId}/schema/export`)
 export const importSchema = (typeId, data) => post(`/project-types/${typeId}/schema/import`, data)
+
+/** Excel 字段模板下载 */
+export const downloadFieldTemplate = (typeId, cfgId) => get(`/project-types/${typeId}/file-types/${cfgId}/fields/template`, {}, { responseType: 'blob' })
+
+/** Excel 批量导入字段 */
+export const importFieldsExcel = (typeId, cfgId, file) => {
+  const formData = new FormData()
+  formData.append('file', file)
+  return post(`/project-types/${typeId}/file-types/${cfgId}/fields/import`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+}

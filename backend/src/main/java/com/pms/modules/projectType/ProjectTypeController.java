@@ -9,16 +9,24 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.pms.common.Result;
+import com.pms.modules.fileType.FieldExcelRow;
 import com.pms.modules.fileType.PmsFileTypeConfig;
 import com.pms.modules.fileType.PmsFileTypeConfigMapper;
 import com.pms.modules.fileType.PmsFieldDefinition;
 import com.pms.modules.fileType.PmsFieldDefinitionMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -117,6 +125,90 @@ public class ProjectTypeController {
 
     @DeleteMapping("/{typeId}/file-types/{cfgId}/fields/{fieldId}")
     public Result<Void> deleteField(@PathVariable Long fieldId) { fdMapper.deleteById(fieldId); return Result.ok(); }
+
+    // ========== Excel 导入导出 ==========
+
+    /**
+     * 下载字段配置模板 — 包含已有字段数据供编辑
+     */
+    @GetMapping("/{typeId}/file-types/{cfgId}/fields/template")
+    public void downloadTemplate(@PathVariable Long typeId, @PathVariable Long cfgId, HttpServletResponse response) throws IOException {
+        PmsFileTypeConfig ftc = ftcMapper.selectById(cfgId);
+        if (ftc == null) { response.sendError(404); return; }
+
+        List<PmsFieldDefinition> fields = fdMapper.selectList(
+                new LambdaQueryWrapper<PmsFieldDefinition>()
+                        .eq(PmsFieldDefinition::getFileTypeConfigId, cfgId)
+                        .orderByAsc(PmsFieldDefinition::getSortOrder));
+
+        List<FieldExcelRow> rows = new ArrayList<>();
+        for (PmsFieldDefinition fd : fields) {
+            FieldExcelRow row = new FieldExcelRow();
+            row.setFieldKey(fd.getFieldKey());
+            row.setFieldLabel(fd.getFieldLabel());
+            row.setFieldType(fd.getFieldType());
+            row.setIsRequired(fd.getIsRequired() == 1 ? "是" : "否");
+            row.setIsActive(fd.getIsActive() == 1 ? "是" : "否");
+            row.setSortOrder(fd.getSortOrder());
+            rows.add(row);
+        }
+        // 如果无数据，加一行示例
+        if (rows.isEmpty()) {
+            FieldExcelRow example = new FieldExcelRow();
+            example.setFieldKey("xing_ming"); example.setFieldLabel("姓名");
+            example.setFieldType("text"); example.setIsRequired("是");
+            example.setIsActive("是"); example.setSortOrder(1);
+            rows.add(example);
+        }
+
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("UTF-8");
+        String filename = URLEncoder.encode(ftc.getName() + "_字段模板.xlsx", StandardCharsets.UTF_8).replace("+", "%20");
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + filename);
+        EasyExcel.write(response.getOutputStream(), FieldExcelRow.class).sheet("字段配置").doWrite(rows);
+    }
+
+    /**
+     * 从 Excel 批量导入字段 — 全量替换（删除旧字段 + 写入新字段）
+     */
+    @PostMapping("/{typeId}/file-types/{cfgId}/fields/import")
+    @PreAuthorize("hasAnyAuthority('ROLE_super_admin', 'ROLE_admin')")
+    @Transactional
+    public Result<Map<String, Object>> importFields(@PathVariable Long typeId, @PathVariable Long cfgId,
+                                                     @RequestParam("file") MultipartFile file) throws IOException {
+        if (file.isEmpty()) return Result.fail("文件不能为空");
+
+        List<FieldExcelRow> rows = EasyExcel.read(file.getInputStream()).head(FieldExcelRow.class).sheet().doReadSync();
+        if (rows.isEmpty()) return Result.fail("未读取到数据，请检查文件内容");
+
+        // 删除该文件类型下的所有字段
+        fdMapper.delete(new LambdaQueryWrapper<PmsFieldDefinition>().eq(PmsFieldDefinition::getFileTypeConfigId, cfgId));
+
+        int created = 0, skipped = 0;
+        for (int i = 0; i < rows.size(); i++) {
+            FieldExcelRow row = rows.get(i);
+            if (StrUtil.isBlank(row.getFieldKey()) || StrUtil.isBlank(row.getFieldLabel())) { skipped++; continue; }
+
+            PmsFieldDefinition fd = new PmsFieldDefinition();
+            fd.setFileTypeConfigId(cfgId);
+            fd.setFieldKey(row.getFieldKey().trim());
+            fd.setFieldLabel(row.getFieldLabel().trim());
+            fd.setFieldType(StrUtil.isBlank(row.getFieldType()) ? "text" : row.getFieldType().trim());
+            fd.setIsRequired("是".equals(row.getIsRequired()) ? 1 : 0);
+            fd.setIsActive("是".equals(row.getIsActive()) ? 1 : 0);
+            fd.setSortOrder(row.getSortOrder() != null ? row.getSortOrder() : i + 1);
+            fdMapper.insert(fd);
+            created++;
+        }
+
+        // 更新文件类型配置的字段校验标记
+        PmsFileTypeConfig ftc = ftcMapper.selectById(cfgId);
+        if (ftc != null) { ftc.setHasFields(created > 0); ftcMapper.updateById(ftc); }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("created", created); result.put("skipped", skipped);
+        return Result.ok(result);
+    }
 
     // ========== Schema 导入导出 ==========
 

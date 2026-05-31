@@ -33,7 +33,7 @@ request.interceptors.response.use(
 )
 
 export default request
-export const get = (url, params) => request.get(url, { params })
+export const get = (url, params, config) => request.get(url, { params, ...config })
 export const post = (url, data) => request.post(url, data)
 export const put = (url, data) => request.put(url, data)
 export const del = (url, params) => request.delete(url, { params })

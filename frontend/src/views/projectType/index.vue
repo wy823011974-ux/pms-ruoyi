@@ -73,7 +73,14 @@
       <el-drawer v-model="fieldVisible" title="字段配置" size="520px" direction="rtl" :append-to-body="true">
         <div class="drawer-toolbar">
           <span class="drawer-subtitle">{{ currentFtc?.name }} · {{ fieldList.length }} 个字段</span>
-          <el-button type="primary" size="small" @click="openCreateField"><el-icon><Plus /></el-icon>新增字段</el-button>
+          <div class="btn-group">
+            <el-button size="small" @click="handleDownloadTemplate">下载模板</el-button>
+            <el-button type="primary" size="small" @click="triggerImport">
+              <el-icon><Upload /></el-icon>Excel导入
+            </el-button>
+            <input ref="fileInput" type="file" accept=".xlsx,.xls" style="display:none" @change="handleImportExcel" />
+            <el-button type="primary" size="small" @click="openCreateField"><el-icon><Plus /></el-icon>新增字段</el-button>
+          </div>
         </div>
         <div class="field-list" v-if="fieldList.length">
           <div v-for="fd in fieldList" :key="fd.id" class="field-item">
@@ -130,9 +137,9 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { listProjectTypes, createProjectType, deleteProjectType, listFileTypes, createFileType, deleteFileType, listFields, createField, updateField, deleteField, exportSchema, importSchema } from '@/api/project'
+import { listProjectTypes, createProjectType, deleteProjectType, listFileTypes, createFileType, deleteFileType, listFields, createField, updateField, deleteField, exportSchema, importSchema, downloadFieldTemplate, importFieldsExcel } from '@/api/project'
 import { ElMessage } from 'element-plus'
-import { Plus } from '@element-plus/icons-vue'
+import { Plus, Upload } from '@element-plus/icons-vue'
 
 const types = ref([]); const typeDialog = ref(false)
 const typeForm = reactive({ name:'', code:'', description:'' })
@@ -143,6 +150,30 @@ const ftcForm = reactive({ name:'', sheetName:'', skipRows:0, hasFields:false, s
 const fieldVisible = ref(false); const currentFtc = ref(null); const fieldList = ref([])
 const fieldDialog = ref(false); const fieldEditing = ref(null)
 const fieldForm = reactive({ fieldLabel:'', fieldKey:'', fieldType:'text', isRequired:false, sortOrder:0, isActive:true })
+const fileInput = ref(null)
+
+function triggerImport() { fileInput.value?.click() }
+
+async function handleDownloadTemplate() {
+  try {
+    const res = await downloadFieldTemplate(currentType.value.id, currentFtc.value.id)
+    const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a'); a.href = url; a.download = `${currentFtc.value.name}_字段模板.xlsx`
+    a.click(); URL.revokeObjectURL(url); ElMessage.success('已下载')
+  } catch { ElMessage.error('下载失败') }
+}
+
+async function handleImportExcel(e) {
+  const file = e.target.files?.[0]
+  if (!file) return
+  try {
+    const res = await importFieldsExcel(currentType.value.id, currentFtc.value.id, file)
+    ElMessage.success(`导入成功：${res.data?.created || 0} 个字段`)
+    await loadFieldList()
+  } catch { ElMessage.error('导入失败，请检查文件格式') }
+  fileInput.value.value = ''
+}
 
 async function loadTypes() { try { const r = await listProjectTypes(); types.value = r.data || [] } catch {} }
 function openCreateType() { Object.assign(typeForm, { name:'', code:'', description:'' }); typeDialog.value = true }
@@ -189,6 +220,7 @@ onMounted(loadTypes)
 
 .drawer-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .drawer-subtitle { font-size: 14px; color: var(--apple-text-secondary); }
+.btn-group { display: flex; gap: 6px; }
 
 .ftc-item, .field-item {
   display: flex; justify-content: space-between; align-items: flex-start;
